@@ -49,12 +49,7 @@ public class ConjuntoDatos {
                 new InputStreamReader(flujo, StandardCharsets.UTF_8)
         )) {
             String linea;
-            boolean primera = true;
             while ((linea = lector.readLine()) != null) {
-                if (primera) {
-                    if (linea.startsWith("\uEFFF")) linea = linea.substring(1);
-                    primera = false;
-                }
                 StringBuilder registro = new StringBuilder(linea);
                 while (comillasImpares(registro)) {
                     String siguiente = lector.readLine();
