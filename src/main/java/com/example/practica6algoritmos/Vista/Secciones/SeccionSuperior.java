@@ -12,10 +12,10 @@ import javafx.scene.layout.HBox;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-public class SeccionSuperior extends HBox {
+public class SeccionSuperior {
     private HBox contenedor;
     private ComboBox<String> columnaASeleccionar;
-    private ComboBox<String> ordenamientoASeleccionar;
+    private ComboBox<Metodo> ordenamientoASeleccionar;
     private Button botonOrdenar;
     private Button botonRestablecer;
     private CheckBox checkBoxCompararConMetodos;
@@ -28,32 +28,32 @@ public class SeccionSuperior extends HBox {
     private Consumer<String> cambiarColumna;
 
     public SeccionSuperior(ArrayList<String> columnas) {
-        super(12);
         columnaASeleccionar = new ComboBox<>();
         ordenamientoASeleccionar = new ComboBox<>();
-        botonOrdenar = new Button("Ordenar columna");
-        botonRestablecer = new Button("Restablecer columnas");
-        checkBoxCompararConMetodos = new CheckBox("Permitir comparar con otros ordenamientos");
-        botonMostrarGrafica = new Button("Graficar ordenamiento");
-        tiempoOrdenamiento = new Label();
+        botonOrdenar = new Button("Ordenar");
+        botonRestablecer = new Button("Restablecer");
+        checkBoxCompararConMetodos = new CheckBox("Comparar con otros ordenamientos");
+        botonMostrarGrafica = new Button("Graficar");
+        tiempoOrdenamiento = new Label("--");
         ocupado = new SimpleBooleanProperty(false);
         tiemposDisponibles = new SimpleBooleanProperty(false);
         columnaSinGrafica = new SimpleBooleanProperty(false);
 
-
         configurarComboBoxes(columnas);
         configurarBotones();
 
-        setAlignment(Pos.CENTER_LEFT);
-        setPadding(new Insets(16, 18, 16, 16));
-        getChildren().addAll(
+        contenedor = new HBox(12);
+        contenedor.getStyleClass().add("seccion-superior");
+        contenedor.setAlignment(Pos.CENTER_LEFT);
+        contenedor.setPadding(new Insets(16, 18, 16, 16));
+        contenedor.getChildren().addAll(
                 new Label("Columna: "), columnaASeleccionar,
                 new Label("Ordenamiento: "), ordenamientoASeleccionar,
                 botonOrdenar, botonRestablecer,
-                botonMostrarGrafica
+                checkBoxCompararConMetodos,
+                botonMostrarGrafica,
+                tiempoOrdenamiento
         );
-
-        contenedor = new HBox();
     }
 
     public void configurarComboBoxes(ArrayList<String> columnas) {
@@ -65,38 +65,49 @@ public class SeccionSuperior extends HBox {
             tiemposDisponibles.set(false);
             tiempoOrdenamiento.setText("--");
             if (cambiarColumna != null && nueva != null) cambiarColumna.accept(nueva);
-
         });
         columnaASeleccionar.getSelectionModel().selectFirst();
 
         ordenamientoASeleccionar.setPrefWidth(200);
-        for (Metodo metodo : Metodo.values()) ordenamientoASeleccionar.getItems().add(metodo.getNombre());
-        ordenamientoASeleccionar.setValue(Metodo.QUICKSORT.getNombre());
+        ordenamientoASeleccionar.getItems().setAll(Metodo.values());   // se ve con Metodo.toString()
+        ordenamientoASeleccionar.setValue(Metodo.QUICKSORT);
 
-        columnaASeleccionar.disableProperty().bind(ocupado);
+        columnaASeleccionar.disableProperty().bind(
+                ocupado.or(checkBoxCompararConMetodos.selectedProperty()));
         ordenamientoASeleccionar.disableProperty().bind(ocupado);
 
     }
 
-    public void configurarBotones() {
-
+    private void configurarBotones() {
         botonOrdenar.disableProperty().bind(ocupado);
         botonRestablecer.disableProperty().bind(ocupado);
-        botonMostrarGrafica.disableProperty().bind(ocupado);
-
+        checkBoxCompararConMetodos.disableProperty().bind(ocupado);
+        botonMostrarGrafica.disableProperty().bind(
+                ocupado.or(tiemposDisponibles.not()).or(columnaSinGrafica));
     }
 
     public String getColumnaSeleccionada() {
         return columnaASeleccionar.getValue();
     }
 
-    public ArrayList<Metodo> getMetodoSeleccionado() {
-        ArrayList<Metodo> metodoSeleccionado = new ArrayList<>();
-        String metodoElegido = ordenamientoASeleccionar.getValue();
-        for (Metodo metodo : Metodo.values()) {
-            if (metodo.getNombre().equalsIgnoreCase(metodoElegido)) metodoSeleccionado.add(metodo);
-        }
-        return metodoSeleccionado;
+    public Metodo getMetodoSeleccionado() {
+        return ordenamientoASeleccionar.getValue();
+    }
+
+    public boolean isCompararActivado() {
+        return checkBoxCompararConMetodos.isSelected();
+    }
+
+    public void setOcupado(boolean valor) {
+        ocupado.set(valor);
+    }
+
+    public void setTiemposDisponibles(boolean valor) {
+        tiemposDisponibles.set(valor);
+    }
+
+    public void setTiempoOrdenamiento(String texto) {
+        tiempoOrdenamiento.setText(texto);
     }
 
     public void alOrdenar(Runnable accion) {
@@ -113,6 +124,15 @@ public class SeccionSuperior extends HBox {
 
     public void alCambiarColumna(Consumer<String> accion) {
         cambiarColumna = accion;
+        if (accion != null && getColumnaSeleccionada() != null) {
+            accion.accept(getColumnaSeleccionada());
+        }
     }
+
+    public HBox getContenedor() {
+        return contenedor;
+    }
+
+
 
 }

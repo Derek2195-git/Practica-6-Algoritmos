@@ -5,5 +5,6 @@ module com.example.practica6algoritmos {
 
 
     opens com.example.practica6algoritmos to javafx.fxml;
+    opens com.example.practica6algoritmos.Modelo to javafx.base;
     exports com.example.practica6algoritmos;
 }

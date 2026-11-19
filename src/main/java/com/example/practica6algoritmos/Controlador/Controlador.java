@@ -3,6 +3,9 @@ package com.example.practica6algoritmos.Controlador;
 import com.example.practica6algoritmos.Modelo.Cancion;
 import com.example.practica6algoritmos.Modelo.ConjuntoDatos;
 import com.example.practica6algoritmos.Modelo.GestorArchivo;
+import com.example.practica6algoritmos.Vista.Secciones.SeccionSuperior;
+import com.example.practica6algoritmos.Vista.Secciones.SeccionTabla;
+import com.example.practica6algoritmos.Vista.Ventana.VentanaGrafica;
 import com.example.practica6algoritmos.Vista.Ventana.VentanaPrincipal;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -13,19 +16,28 @@ import java.util.Comparator;
 import java.util.function.Function;
 
 public class Controlador {
-    private Stage stage;
-    private VentanaPrincipal ventana;
-    private ConjuntoDatos conjuntoDatos;
+
+    private final Stage stage;
+    private final ConjuntoDatos conjuntoDatos;
+    private final VentanaPrincipal ventana;
+    private final SeccionSuperior seccionSuperior;
+    private final SeccionTabla seccionTabla;
+    private VentanaGrafica ventanaGrafica;
 
 
     public Controlador(Stage stage) throws IOException {
+        this.stage = stage;
         conjuntoDatos = new ConjuntoDatos();
 
         ventana = new VentanaPrincipal(conjuntoDatos.getNombresColumnas());
         ventana.getSeccionTabla().mostrarCanciones(conjuntoDatos.getCanciones());
 
-
         Scene escena = new Scene(ventana.getVentana(), 800, 600);
+
+        ventana.getSeccionSuperior().alGraficar(this::graficarTabla);
+        ventana.getSeccionSuperior().alRestablecer(this::restablecerTabla);
+        ventana.getSeccionSuperior().alOrdenar(this::ordenarTabla);
+        ventana.getSeccionSuperior().alCambiarColumna(this::cambiarColumna);
 
         stage.setTitle("CSV");
         stage.setScene(escena);
@@ -92,6 +104,12 @@ public class Controlador {
     /** Compara por un campo con orden natural (Integer, Double, Boolean) y con null al final. */
     private static <T extends Comparable<T>> Comparator<Cancion> porNatural(Function<Cancion, T> campo) {
         return Comparator.comparing(campo, Comparator.nullsLast(Comparator.<T>naturalOrder()));
+    }
+
+    private void cambiarColumna(String columna) {
+        tiempos.clear();
+        seccionTabla.mostrarCanciones(conjuntoDatos.getCanciones());
+        seccionTabla.mostrarColumna(columna);
     }
 
 }
