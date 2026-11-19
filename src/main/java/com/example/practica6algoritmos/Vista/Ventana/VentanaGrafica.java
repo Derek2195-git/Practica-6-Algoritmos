@@ -47,7 +47,7 @@ public class VentanaGrafica extends Stage {
             EnumMap<Metodo, Long> ordenados = new EnumMap<>(Metodo.class);
             ordenados.putAll(tiemposNs);
 
-            Grafica grafica = tipo.crear("Tiempo de ordenación usando el método " + columna);
+            Grafica grafica = tipo.crear("Tiempo de ordenación de la columna " + columna);
             grafica.cargarTiempos(ordenados);
             ventana.setCenter(grafica.getGrafica());
 
@@ -61,11 +61,10 @@ public class VentanaGrafica extends Stage {
 
     public HBox crearItemLeyenda(Metodo metodo, long tiempoNs) {
         Region cuadro = new Region();
-        cuadro.getStyleClass().add("cuadro-leyenda");
+        cuadro.getStyleClass().addAll("cuadro-leyenda", Grafica.claseCss(metodo));
         Label texto = new Label(metodo.getNombre() + ": " + Grafica.formatearTiempo(tiempoNs));
         HBox item = new HBox(6, cuadro, texto);
         item.setAlignment(Pos.CENTER_LEFT);
         return item;
-
     }
 }

@@ -22,7 +22,7 @@ public abstract class Grafica {
         return String.format("%.3f ms", tiempo / NS_A_MS);
     }
 
-    public String claseCss(Metodo metodo) {
+    public static String claseCss(Metodo metodo) {
         return "metodo-" + metodo.name().toLowerCase();
     }
 

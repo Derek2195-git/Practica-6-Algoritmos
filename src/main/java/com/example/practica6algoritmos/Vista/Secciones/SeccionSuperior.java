@@ -86,10 +86,6 @@ public class SeccionSuperior {
                 ocupado.or(tiemposDisponibles.not()).or(columnaSinGrafica));
     }
 
-    public void setDetalleTiempos(String texto) {
-        tiempoOrdenamiento.setTooltip(texto == null || texto.isEmpty() ? null : new Tooltip(texto));
-    }
-
     public String getColumnaSeleccionada() {
         return columnaASeleccionar.getValue();
     }

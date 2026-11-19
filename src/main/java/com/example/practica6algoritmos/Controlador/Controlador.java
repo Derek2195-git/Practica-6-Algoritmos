@@ -14,10 +14,7 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.EnumMap;
+import java.util.*;
 import java.util.function.Function;
 
 public class Controlador {
@@ -121,50 +118,85 @@ public class Controlador {
 
     private void ordenarTabla() {
         String columna = ventana.getSeccionSuperior().getColumnaSeleccionada();
-        Metodo metodo = ventana.getSeccionSuperior().getMetodoSeleccionado();
-        if (columna == null || metodo == null) return;
+        Metodo elegido = ventana.getSeccionSuperior().getMetodoSeleccionado();
+        boolean todos = ventana.getSeccionSuperior().isCompararActivado();
+        if (columna == null || (!todos && elegido == null)) return;
 
-        if (!ventana.getSeccionSuperior().isCompararActivado()) tiempos.clear();
+        List<Metodo> metodos = todos ? Arrays.asList(Metodo.values()) : List.of(elegido);
 
+        tiempos.clear();
         Cancion.setCriterio(getComparator(columna));
-        Cancion[] copia = conjuntoDatos.crearCopiaOrdenable();
 
         ventana.getSeccionSuperior().setOcupado(true);
         ventana.getSeccionSuperior().setTiemposDisponibles(false);
-        ventana.getSeccionSuperior().setTiempoOrdenamiento("Ordenando con " + metodo);
+        ventana.getSeccionSuperior().setTiempoOrdenamiento("Ordenando…");
 
         Thread hilo = new Thread(null, () -> {
-            try {
-                long ns = new ComparadorTiempos<Cancion>(metodo).medirTiempo(copia);
-                Platform.runLater(() -> alTerminarOrdenamiento(columna, metodo, copia, ns));
-            } catch (Throwable error) {   // incluye StackOverflowError
-                Platform.runLater(() -> alFallarOrdenamiento(metodo, error));
+            EnumMap<Metodo, Long> resultados = new EnumMap<>(Metodo.class);
+            EnumMap<Metodo, Throwable> fallos = new EnumMap<>(Metodo.class);
+            Cancion[] ultimaOrdenada = null;
+
+            for (int i = 0; i < metodos.size(); i++) {
+                Metodo metodo = metodos.get(i);
+                int numero = i + 1;
+                Platform.runLater(() -> ventana.getSeccionSuperior().setTiempoOrdenamiento(
+                        "Ordenando con " + metodo + " (" + numero + " de " + metodos.size() + ")"));
+
+                Cancion[] copia = conjuntoDatos.crearCopiaOrdenable();   // cada método parte del orden original
+                try {
+                    long ns = new ComparadorTiempos<Cancion>(metodo).medirTiempo(copia);
+                    resultados.put(metodo, ns);
+                    ultimaOrdenada = copia;
+                } catch (Throwable error) {   // incluye StackOverflowError
+                    fallos.put(metodo, error);
+                }
             }
+
+            Cancion[] ordenadas = ultimaOrdenada;
+            Platform.runLater(() -> alTerminarOrdenamiento(columna, resultados, fallos, ordenadas));
         }, "ordenamiento", TAMANO_MAXIMO);
         hilo.setDaemon(true);
         hilo.start();
     }
 
-    private void alTerminarOrdenamiento(String columna, Metodo metodo, Cancion[] ordenadas, long ns) {
-        tiempos.put(metodo, ns);
-        ventana.getSeccionTabla().mostrarCanciones(new ArrayList<>(Arrays.asList(ordenadas)));
-        ventana.getSeccionTabla().mostrarColumna(columna);
-        ventana.getSeccionSuperior().setTiempoOrdenamiento(metodo + ": " + Grafica.formatearTiempo(ns));
-        ventana.getSeccionSuperior().setOcupado(false);
-        ventana.getSeccionSuperior().setTiemposDisponibles(true);
-    }
-
-    private void alFallarOrdenamiento(Metodo metodo, Throwable error) {
+    private void alTerminarOrdenamiento(String columna, Map<Metodo, Long> resultados,
+                                        Map<Metodo, Throwable> fallos, Cancion[] ordenadas) {
+        tiempos.putAll(resultados);
+        if (ordenadas != null) {
+            ventana.getSeccionTabla().mostrarCanciones(new ArrayList<>(Arrays.asList(ordenadas)));
+            ventana.getSeccionTabla().mostrarColumna(columna);
+        }
+        mostrarTiempos();
         ventana.getSeccionSuperior().setOcupado(false);
         ventana.getSeccionSuperior().setTiemposDisponibles(!tiempos.isEmpty());
-        ventana.getSeccionSuperior().setTiempoOrdenamiento("--");
+        if (!fallos.isEmpty()) mostrarErrores(fallos);
+    }
 
-        String mensaje = (error instanceof StackOverflowError)
-                ? metodo + " agotó la pila de memoria con esta columna (demasiados valores repetidos)."
-                : "No se pudo ordenar la columna: " + error;
-        Alert alerta = new Alert(Alert.AlertType.ERROR, mensaje, ButtonType.OK);
-        alerta.getDialogPane().getStylesheets().add(
-                getClass().getResource("/recursos/estilos.css").toExternalForm());
+    private void mostrarTiempos() {
+        if (tiempos.isEmpty()) {
+            ventana.getSeccionSuperior().setTiempoOrdenamiento("--");
+            return;
+        }
+        Metodo masRapido = null;
+        for (Map.Entry<Metodo, Long> e : tiempos.entrySet()) {
+            if (masRapido == null || e.getValue() < tiempos.get(masRapido)) masRapido = e.getKey();
+        }
+        String tiempoRapido = Grafica.formatearTiempo(tiempos.get(masRapido));
+        String texto = tiempos.size() == 1
+                ? masRapido + ": " + tiempoRapido
+                : "Más rápido: " + masRapido + " (" + tiempoRapido + ")";
+        ventana.getSeccionSuperior().setTiempoOrdenamiento(texto);
+    }
+
+    private void mostrarErrores(Map<Metodo, Throwable> fallos) {
+        StringBuilder mensaje = new StringBuilder("No se pudo ordenar con:\n");
+        for (Map.Entry<Metodo, Throwable> f : fallos.entrySet()) {
+            String motivo = (f.getValue() instanceof StackOverflowError)
+                    ? "se agotó la pila (demasiados valores repetidos)"
+                    : String.valueOf(f.getValue());
+            mensaje.append("• ").append(f.getKey()).append(": ").append(motivo).append('\n');
+        }
+        Alert alerta = new Alert(Alert.AlertType.ERROR, mensaje.toString().trim(), ButtonType.OK);
         alerta.setHeaderText(null);
         alerta.initOwner(stage);
         alerta.showAndWait();

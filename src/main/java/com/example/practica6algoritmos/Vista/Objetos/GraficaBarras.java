@@ -27,6 +27,7 @@ public class GraficaBarras extends Grafica {
         grafica = new BarChart<>(ejeX, ejeY);
         grafica.setTitle(titulo);
         grafica.setAnimated(false);
+        grafica.setLegendVisible(false);
         grafica.setPrefSize(500, 350);
     }
 
