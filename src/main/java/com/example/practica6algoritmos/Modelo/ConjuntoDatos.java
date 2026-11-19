@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** El dataset convertido en canciones, en el orden original del CSV. */
+
 public class ConjuntoDatos {
-    /** Las 33 columnas, en el mismo orden que los parámetros del constructor de Cancion. */
+    // Columnas del CSV
     private static final String[] COLUMNAS = {
             "song_id", "performer", "song", "spotify_genre", "spotify_track_id",
             "spotify_track_preview_url", "spotify_track_duration_ms", "spotify_track_explicit",
@@ -22,7 +22,9 @@ public class ConjuntoDatos {
             "confidence_score"
     };
 
+    // Todas las canciones del dataset se encuentran en este arraylist
     private final ArrayList<Cancion> canciones = new ArrayList<>();
+
     private int filasDescartadas = 0;
 
     public ConjuntoDatos() throws IOException {

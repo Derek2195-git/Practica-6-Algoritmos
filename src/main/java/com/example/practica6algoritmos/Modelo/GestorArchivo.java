@@ -12,15 +12,18 @@ public class GestorArchivo {
 
     private final String ruta;
 
+    /**
+     * Constructor de la clase que gestiona el archivo
+     */
     public GestorArchivo() {
-        this(RUTA_POR_DEFECTO);
+        ruta = RUTA_POR_DEFECTO;
     }
 
-    public GestorArchivo(String ruta) {
-        this.ruta = ruta;
-    }
-
-    /** Todas las filas del archivo; la primera es el encabezado. */
+    /**
+     * Este metodo lee todas las
+     * @return
+     * @throws IOException
+     */
     public List<String[]> leerFilas() throws IOException {
         InputStream flujo = getClass().getResourceAsStream(ruta);
         if (flujo == null) {

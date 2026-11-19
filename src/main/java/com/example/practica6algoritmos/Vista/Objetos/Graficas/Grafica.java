@@ -22,7 +22,14 @@ public abstract class Grafica {
         return "metodo-" + metodo.name().toLowerCase();
     }
 
-    public abstract void cargarValores(ArrayList<Double> valores);
+    public void cargarValores(ArrayList<Double> valores) {
+
+    }
+
+    public void cargarValoresBooleanos(ArrayList<Boolean> valores) {
+
+    }
+
 
     public abstract void convertirACelda();
 }

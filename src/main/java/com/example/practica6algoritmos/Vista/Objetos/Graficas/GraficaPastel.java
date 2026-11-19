@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.Tooltip;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -52,9 +53,30 @@ public class GraficaPastel extends Grafica {
         return grafica;
     }
 
-    @Override
-    public void cargarValores(ArrayList<Double> valores) {
+    public void cargarValoresBooleanos(ArrayList<Boolean> valores) {
+        int verdaderos = 0;
+        int falsos = 0;
+        int nulos = 0;
 
+        for (Boolean bool : valores) {
+            if (bool == null) nulos++;
+            else if(bool) verdaderos++;
+            else falsos++;
+        }
+
+        ObservableList<PieChart.Data> datos = FXCollections.observableArrayList();
+        if (verdaderos > 0) datos.add(new PieChart.Data("true", verdaderos));
+        if (falsos > 0) datos.add(new PieChart.Data("false", falsos));
+        if (nulos > 0) datos.add(new PieChart.Data("null", nulos));
+        grafica.setData(datos);
+        for (PieChart.Data dato : datos) {
+            String texto = switch(dato.getName()) {
+                case "true" -> "True";
+                case "false"-> "False";
+                default-> "Null";
+            };
+            Tooltip.install(dato.getNode(), new Tooltip(texto + ": "  + dato.getPieValue()));
+        }
     }
 
     @Override

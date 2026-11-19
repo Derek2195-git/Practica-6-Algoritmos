@@ -180,7 +180,7 @@
 }
 .chart-pie {
     -fx-border-color: #282a36;
-    -fx-border-width: 2;
+    -fx-border-width: 1;
 }
 .chart-pie-label {
     -fx-fill: #f8f8f2;
@@ -215,14 +215,7 @@
 .cuadro-leyenda.metodo-arraysort    { -fx-background-color: #f1fa8c; }
 .cuadro-leyenda.metodo-parallelsort { -fx-background-color: #50fa7b; }
 
-.segmento-tiempo   { -fx-background-radius: 0; }
-.segmento-primero  { -fx-background-radius: 3 0 0 3; }
-.segmento-ultimo   { -fx-background-radius: 0 3 3 0; }
-.segmento-unico    { -fx-background-radius: 3; }
-
-.segmento-tiempo.metodo-seleccion    { -fx-background-color: #bd93f9; }
-.segmento-tiempo.metodo-shell        { -fx-background-color: #ffb86c; }
-.segmento-tiempo.metodo-quicksort    { -fx-background-color: #8be9fd; }
-.segmento-tiempo.metodo-mergesort    { -fx-background-color: #ff79c6; }
-.segmento-tiempo.metodo-arraysort    { -fx-background-color: #f1fa8c; }
-.segmento-tiempo.metodo-parallelsort { -fx-background-color: #50fa7b; }
+.label-tabla {
+    -fx-font-size: 14px;
+    -fx-text-fill: #bd93f9;
+}

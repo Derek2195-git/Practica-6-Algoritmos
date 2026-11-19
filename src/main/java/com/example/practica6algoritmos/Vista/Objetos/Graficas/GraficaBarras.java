@@ -56,7 +56,6 @@ public class GraficaBarras extends Grafica {
         }
     }
 
-    @Override
     public void cargarValores(ArrayList<Double> valores) {
         if (valores.isEmpty()) return;
 
@@ -82,7 +81,7 @@ public class GraficaBarras extends Grafica {
             serie.getData().add(new XYChart.Data<>(nombre, conteos[i]));
         }
 
-        ejeX.setLabel(minimo + " - " + maximo);
+        ejeX.setLabel(formatear(minimo) + " - " + formatear(maximo));
         ejeX.setCategories(FXCollections.observableList(categorias));
         grafica.getData().clear();
         grafica.getData().add(serie);
