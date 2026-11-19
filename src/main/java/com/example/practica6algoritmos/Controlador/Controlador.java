@@ -184,7 +184,7 @@ public class Controlador {
         String tiempoRapido = Grafica.formatearTiempo(tiempos.get(masRapido));
         String texto = tiempos.size() == 1
                 ? masRapido + ": " + tiempoRapido
-                : "Más rápido: " + masRapido + " (" + tiempoRapido + ")";
+                : "Más rápido: " + masRapido;
         ventana.getSeccionSuperior().setTiempoOrdenamiento(texto);
     }
 

@@ -38,22 +38,18 @@ public class VentanaGrafica extends Stage {
         setScene(escena);
     }
 
-    public void mostrar(String columna, TipoGrafica tipo, Map<Metodo, Long> tiemposNs){
+    public void mostrar(String columna, TipoGrafica tipo, Map<Metodo, Long> tiemposNs) {
         leyenda.getChildren().clear();
 
-        if (tipo == TipoGrafica.SIN_GRAFICA) {
-            ventana.setCenter(new Label("La columna "  + columna + " no tiene grafica"));
-        } else {
-            EnumMap<Metodo, Long> ordenados = new EnumMap<>(Metodo.class);
-            ordenados.putAll(tiemposNs);
+        EnumMap<Metodo, Long> ordenados = new EnumMap<>(Metodo.class);
+        ordenados.putAll(tiemposNs);
 
-            Grafica grafica = tipo.crear("Tiempo de ordenación de la columna " + columna);
-            grafica.cargarTiempos(ordenados);
-            ventana.setCenter(grafica.getGrafica());
+        Grafica grafica = tipo.crear("Tiempo de ordenación de la columna " + columna);
+        grafica.cargarTiempos(ordenados);
+        ventana.setCenter(grafica.getGrafica());
 
-            for (Map.Entry<Metodo, Long> e : ordenados.entrySet()) {
-                leyenda.getChildren().add(crearItemLeyenda(e.getKey(), e.getValue()));
-            }
+        for (Map.Entry<Metodo, Long> e : ordenados.entrySet()) {
+            leyenda.getChildren().add(crearItemLeyenda(e.getKey(), e.getValue()));
         }
         show();
         toFront();

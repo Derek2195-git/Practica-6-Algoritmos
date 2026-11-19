@@ -4,6 +4,7 @@ import java.util.Set;
 
 public enum TipoGrafica {
     SIN_GRAFICA,
+    PROPORCION,
     BARRAS,
     PASTEL;
 
@@ -19,7 +20,7 @@ public enum TipoGrafica {
     public static TipoGrafica deColumna(String columna) {
         if (COLUMNAS_BARRAS.contains(columna)) return BARRAS;
         if (COLUMNAS_PASTEL.contains(columna)) return PASTEL;
-        return SIN_GRAFICA;
+        return PROPORCION;
     }
 
     /** Crea la gráfica de este tipo. SIN_GRAFICA no tiene, así que no se puede crear. */
@@ -27,6 +28,7 @@ public enum TipoGrafica {
         return switch (this) {
             case BARRAS -> new GraficaBarras(titulo);
             case PASTEL -> new GraficaPastel(titulo);
+            case PROPORCION -> new GraficaProporcion(titulo);
             case SIN_GRAFICA -> throw new UnsupportedOperationException("Este tipo no tiene gráfica");
         };
     }

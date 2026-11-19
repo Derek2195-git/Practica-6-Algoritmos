@@ -32,7 +32,7 @@ public class SeccionSuperior {
         ordenamientoASeleccionar = new ComboBox<>();
         botonOrdenar = new Button("Ordenar");
         botonRestablecer = new Button("Restablecer");
-        checkBoxCompararConMetodos = new CheckBox("Comparar ordenamientos");
+        checkBoxCompararConMetodos = new CheckBox("Comparar todos");
         botonMostrarGrafica = new Button("Graficar");
         tiempoOrdenamiento = new Label("--");
         ocupado = new SimpleBooleanProperty(false);
@@ -48,7 +48,7 @@ public class SeccionSuperior {
         contenedor.setPadding(new Insets(16, 18, 16, 16));
         contenedor.getChildren().addAll(
                 new Label("Columna: "), columnaASeleccionar,
-                new Label("Ordenamiento: "), ordenamientoASeleccionar,
+                new Label("Metodo: "), ordenamientoASeleccionar,
                 botonOrdenar, botonRestablecer,
                 checkBoxCompararConMetodos,
                 botonMostrarGrafica,
@@ -82,8 +82,7 @@ public class SeccionSuperior {
         botonOrdenar.disableProperty().bind(ocupado);
         botonRestablecer.disableProperty().bind(ocupado);
         checkBoxCompararConMetodos.disableProperty().bind(ocupado);
-        botonMostrarGrafica.disableProperty().bind(
-                ocupado.or(tiemposDisponibles.not()).or(columnaSinGrafica));
+        botonMostrarGrafica.disableProperty().bind(ocupado.or(tiemposDisponibles.not()));
     }
 
     public String getColumnaSeleccionada() {

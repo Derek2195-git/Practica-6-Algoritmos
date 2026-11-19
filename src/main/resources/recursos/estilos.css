@@ -1,33 +1,13 @@
-/* ============================================================
-   Tema Dracula
+/*
    fondo #282a36 · oscuro #21222c · línea #44475a · texto #f8f8f2
    comentario #6272a4 · morado #bd93f9 · rosa #ff79c6 · verde #50fa7b
-   ============================================================ */
+    */
 
 .root {
-    /* Paleta como variables reutilizables */
-    -d-fondo: #282a36;
-    -d-oscuro: #21222c;
-    -d-linea: #44475a;
-    -d-texto: #f8f8f2;
-    -d-suave: #6272a4;
-    -d-morado: #bd93f9;
-    -d-rosa: #ff79c6;
-    -d-verde: #50fa7b;
-    -d-rojo: #ff5555;
-
-    /* Un color fijo por método de ordenamiento */
-    -m-seleccion: #bd93f9;
-    -m-shell: #ffb86c;
-    -m-quicksort: #8be9fd;
-    -m-mergesort: #ff79c6;
-    -m-arraysort: #f1fa8c;
-    -m-parallelsort: #50fa7b;
 
     /* Hace que los controles de JavaFX se calculen en oscuro */
     -fx-base: #44475a;
     -fx-background: #282a36;
-    -fx-control-inner-background: #21222c;
     -fx-accent: #bd93f9;
     -fx-focus-color: #bd93f9;
     -fx-faint-focus-color: transparent;
@@ -35,37 +15,29 @@
     -fx-background-color: #282a36;
 }
 
-/* ---------- Texto ---------- */
+/*  Texto  */
 .label {
-    -fx-text-fill: -d-texto;
+    -fx-text-fill: #f8f8f2;
+    -fx-font-size: 12;
 }
 
 .label-menu {
     -fx-font-size: 24px;
-    -fx-text-fill: -d-morado;
-    -fx-font-weight: bold;
+    -fx-text-fill: #bd93f9;
 }
 
-.tooltip {
-    -fx-background-color: -d-linea;
-    -fx-text-fill: -d-texto;
-    -fx-background-radius: 6;
-}
-
-/* ---------- Sección superior ---------- */
+/*  Sección superior  */
 .seccion-superior {
-    -fx-background-color: -d-oscuro;
-    -fx-background-radius: 10;
-    -fx-border-color: -d-linea;
-    -fx-border-radius: 10;
+    -fx-background-color: #44475a;
+    -fx-background-radius: 4;
 }
 
-/* ---------- Botones ---------- */
+    /*  Botones  */
 .button {
-    -fx-background-color: -d-morado;
+    -fx-background-color: #bd93f9;
     -fx-background-insets: 0;
     -fx-background-radius: 8;
-    -fx-text-fill: -d-fondo;
+    -fx-text-fill: #282a36;
     -fx-font-weight: bold;
     -fx-padding: 8 20 8 20;
     -fx-cursor: hand;
@@ -79,89 +51,84 @@
 .button:disabled {
     -fx-opacity: 0.4;
 }
-/* Los botones de imagen no llevan fondo */
-.button.boton-imagen {
-    -fx-background-color: transparent;
-    -fx-padding: 0;
-}
 
-/* ---------- ComboBox ---------- */
+/*  ComboBox  */
 .combo-box {
-    -fx-background-color: -d-linea;
-    -fx-background-radius: 8;
-    -fx-border-color: -d-suave;
-    -fx-border-radius: 8;
+    -fx-background-color: #44475a;
+    -fx-background-radius: 3;
+    -fx-border-color: #6272a4;
+    -fx-border-radius: 3;
 }
 .combo-box:disabled {
     -fx-opacity: 0.5;
 }
 .combo-box .list-cell {
     -fx-background-color: transparent;
-    -fx-text-fill: -d-texto;
+    -fx-text-fill: #f8f8f2;
 }
 .combo-box .arrow {
-    -fx-background-color: -d-texto;
+    -fx-background-color: #f8f8f2;
 }
 .combo-box-popup .list-view {
-    -fx-background-color: -d-fondo;
-    -fx-border-color: -d-suave;
+    -fx-background-color: #282a36;
+    -fx-border-color: #6272a4;
 }
 .combo-box-popup .list-cell {
-    -fx-background-color: -d-fondo;
-    -fx-text-fill: -d-texto;
+    -fx-background-color: #282a36;
+    -fx-text-fill: #f8f8f2;
 }
 .combo-box-popup .list-cell:hover {
-    -fx-background-color: -d-linea;
+    -fx-background-color: #44475a;
 }
 .combo-box-popup .list-cell:selected {
-    -fx-background-color: -d-morado;
-    -fx-text-fill: -d-fondo;
+    -fx-background-color: #bd93f9;
+    -fx-text-fill: #282a36;
 }
 
-/* ---------- CheckBox ---------- */
+/*  CheckBox  */
 .check-box {
-    -fx-text-fill: -d-texto;
+    -fx-text-fill: #f8f8f2;
 }
 .check-box .box {
-    -fx-background-color: -d-linea;
-    -fx-background-radius: 4;
-    -fx-border-color: -d-suave;
-    -fx-border-radius: 4;
+    -fx-background-color: #44475a;
+    -fx-background-radius: 3;
+    -fx-border-color: #6272a4;
+    -fx-border-radius: 3;
 }
 .check-box:selected .box {
-    -fx-background-color: -d-morado;
-    -fx-border-color: -d-morado;
+    -fx-background-color: #50fa7b;
+    -fx-border-color: #50fa7b;
 }
 .check-box:selected .mark {
-    -fx-background-color: -d-fondo;
+    -fx-background-color: #282a36;
 }
 
-/* ---------- Tabla ---------- */
+/*  Tabla  */
 .table-view {
-    -fx-background-color: -d-fondo;
-    -fx-border-color: -d-linea;
+    -fx-background-color: #282a36;
+    -fx-border-color: #44475a;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
 }
 
 .table-view .column-header-background {
-    -fx-background-color: -d-oscuro;
+    -fx-background-color: #21222c;
 }
 .table-view .column-header-background .filler {
-    -fx-background-color: -d-oscuro;
+    -fx-background-color: #21222c;
 }
 .table-view .column-header {
-    -fx-background-color: -d-oscuro;
-    -fx-border-color: -d-linea;
+    -fx-background-color: #21222c;
+    -fx-border-color: #44475a;
     -fx-border-width: 0 1 1 0;
 }
 .table-view .column-header .label {
-    -fx-text-fill: -d-morado;
+    -fx-text-fill: #bd93f9;
     -fx-font-weight: bold;
 }
 
 .table-row-cell {
-    -fx-background-color: -d-fondo;
+    -fx-background-color: #282a36;
     -fx-table-cell-border-color: transparent;
 }
 .table-row-cell:odd {
@@ -171,93 +138,68 @@
     -fx-background-color: #3a3d4f;
 }
 .table-row-cell:selected {
-    -fx-background-color: -d-linea;
+    -fx-background-color: #44475a;
 }
 .table-cell {
-    -fx-text-fill: -d-texto;
+    -fx-text-fill: #f8f8f2;
 }
 .table-view .placeholder .label {
-    -fx-text-fill: -d-suave;
+    -fx-text-fill: #6272a4;
 }
 
-/* ---------- Barras de desplazamiento ---------- */
-.scroll-bar {
-    -fx-background-color: transparent;
-}
-.scroll-bar .track {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-}
-.scroll-bar .thumb {
-    -fx-background-color: -d-suave;
-    -fx-background-radius: 6;
-}
-.scroll-bar .thumb:hover {
-    -fx-background-color: -d-morado;
-}
-.scroll-bar .increment-button,
-.scroll-bar .decrement-button {
-    -fx-background-color: transparent;
-}
-.scroll-bar .increment-arrow,
-.scroll-bar .decrement-arrow {
-    -fx-background-color: -d-suave;
-}
-
-/* ---------- Ventana de la gráfica ---------- */
+/*  Ventana de la gráfica  */
 .ventana-graficas {
-    -fx-background-color: -d-fondo;
+    -fx-background-color: #282a36;
 }
 
 .chart-title {
-    -fx-text-fill: -d-texto;
+    -fx-text-fill: #f8f8f2;
     -fx-font-size: 16px;
-    -fx-font-weight: bold;
 }
 .chart-plot-background {
     -fx-background-color: transparent;
 }
 .chart-horizontal-grid-lines {
-    -fx-stroke: -d-linea;
+    -fx-stroke: #44475a;
 }
 .chart-vertical-grid-lines {
     -fx-stroke: transparent;
 }
 .axis {
-    -fx-tick-label-fill: -d-texto;
+    -fx-tick-label-fill: #f8f8f2;
 }
 .axis-label {
-    -fx-text-fill: -d-suave;
+    -fx-text-fill: #6272a4;
 }
 .axis-tick-mark,
 .axis-minor-tick-mark {
-    -fx-stroke: -d-suave;
+    -fx-stroke: #6272a4;
 }
 .chart-bar {
     -fx-background-radius: 4 4 0 0;
 }
 .chart-pie {
-    -fx-border-color: -d-fondo;
+    -fx-border-color: #282a36;
     -fx-border-width: 2;
 }
 .chart-pie-label {
-    -fx-fill: -d-texto;
+    -fx-fill: #f8f8f2;
 }
 
-/* ---------- Un color por método: barras, pastel y leyenda ---------- */
-.chart-bar.metodo-seleccion      { -fx-bar-fill: -m-seleccion; }
-.chart-bar.metodo-shell          { -fx-bar-fill: -m-shell; }
-.chart-bar.metodo-quicksort      { -fx-bar-fill: -m-quicksort; }
-.chart-bar.metodo-mergesort      { -fx-bar-fill: -m-mergesort; }
-.chart-bar.metodo-arraysort      { -fx-bar-fill: -m-arraysort; }
-.chart-bar.metodo-parallelsort   { -fx-bar-fill: -m-parallelsort; }
+/*  Un color por metodo: barras, pastel y leyenda  */
+.chart-bar.metodo-seleccion      { -fx-bar-fill: #bd93f9; }
+.chart-bar.metodo-shell          { -fx-bar-fill: #ffb86c; }
+.chart-bar.metodo-quicksort      { -fx-bar-fill: #8be9fd; }
+.chart-bar.metodo-mergesort      { -fx-bar-fill: #ff79c6; }
+.chart-bar.metodo-arraysort      { -fx-bar-fill: #f1fa8c; }
+.chart-bar.metodo-parallelsort   { -fx-bar-fill: #50fa7b; }
 
-.chart-pie.metodo-seleccion      { -fx-pie-color: -m-seleccion; }
-.chart-pie.metodo-shell          { -fx-pie-color: -m-shell; }
-.chart-pie.metodo-quicksort      { -fx-pie-color: -m-quicksort; }
-.chart-pie.metodo-mergesort      { -fx-pie-color: -m-mergesort; }
-.chart-pie.metodo-arraysort      { -fx-pie-color: -m-arraysort; }
-.chart-pie.metodo-parallelsort   { -fx-pie-color: -m-parallelsort; }
+.chart-pie.metodo-seleccion      { -fx-pie-color: #bd93f9; }
+.chart-pie.metodo-shell          { -fx-pie-color: #ffb86c; }
+.chart-pie.metodo-quicksort      { -fx-pie-color: #8be9fd; }
+.chart-pie.metodo-mergesort      { -fx-pie-color: #ff79c6; }
+.chart-pie.metodo-arraysort      { -fx-pie-color: #f1fa8c; }
+.chart-pie.metodo-parallelsort   { -fx-pie-color: #50fa7b; }
 
 .cuadro-leyenda {
     -fx-min-width: 14;
@@ -266,9 +208,21 @@
     -fx-pref-height: 14;
     -fx-background-radius: 3;
 }
-.cuadro-leyenda.metodo-seleccion    { -fx-background-color: -m-seleccion; }
-.cuadro-leyenda.metodo-shell        { -fx-background-color: -m-shell; }
-.cuadro-leyenda.metodo-quicksort    { -fx-background-color: -m-quicksort; }
-.cuadro-leyenda.metodo-mergesort    { -fx-background-color: -m-mergesort; }
-.cuadro-leyenda.metodo-arraysort    { -fx-background-color: -m-arraysort; }
-.cuadro-leyenda.metodo-parallelsort { -fx-background-color: -m-parallelsort; }
+.cuadro-leyenda.metodo-seleccion    { -fx-background-color: #bd93f9; }
+.cuadro-leyenda.metodo-shell        { -fx-background-color: #ffb86c; }
+.cuadro-leyenda.metodo-quicksort    { -fx-background-color: #8be9fd; }
+.cuadro-leyenda.metodo-mergesort    { -fx-background-color: #ff79c6; }
+.cuadro-leyenda.metodo-arraysort    { -fx-background-color: #f1fa8c; }
+.cuadro-leyenda.metodo-parallelsort { -fx-background-color: #50fa7b; }
+
+.segmento-tiempo   { -fx-background-radius: 0; }
+.segmento-primero  { -fx-background-radius: 3 0 0 3; }
+.segmento-ultimo   { -fx-background-radius: 0 3 3 0; }
+.segmento-unico    { -fx-background-radius: 3; }
+
+.segmento-tiempo.metodo-seleccion    { -fx-background-color: #bd93f9; }
+.segmento-tiempo.metodo-shell        { -fx-background-color: #ffb86c; }
+.segmento-tiempo.metodo-quicksort    { -fx-background-color: #8be9fd; }
+.segmento-tiempo.metodo-mergesort    { -fx-background-color: #ff79c6; }
+.segmento-tiempo.metodo-arraysort    { -fx-background-color: #f1fa8c; }
+.segmento-tiempo.metodo-parallelsort { -fx-background-color: #50fa7b; }
