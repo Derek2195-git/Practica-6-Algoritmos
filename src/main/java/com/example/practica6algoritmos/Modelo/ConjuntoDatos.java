@@ -2,8 +2,7 @@ package com.example.practica6algoritmos.Modelo;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public class ConjuntoDatos {
     private final char SEPARADOR = ',';
@@ -153,6 +152,119 @@ public class ConjuntoDatos {
 
     public int getFilasDescartadas() {
         return filasDescartadas;
+    }
+
+    // ---------- Validez (Valid / Missing en Kaggle) ----------
+
+    public int getValoresValidos(String nombre) {
+        return esColumnaNumerica(nombre)
+                ? columnasNumeros.get(nombre).length
+                : columnasTexto.get(nombre).length;
+    }
+
+    public int getValoresFaltantes(String nombre) {
+        return numeroFilas - getValoresValidos(nombre);
+    }
+
+    // ---------- Columnas booleanas ----------
+
+    /** true si todos los valores válidos de una columna de texto son "true" o "false". */
+    public boolean esColumnaBooleana(String nombre) {
+        String[] valores = columnasTexto.get(nombre);
+        if (valores == null || valores.length == 0) return false;
+        for (String valor : valores) {
+            if (!valor.equalsIgnoreCase("true") && !valor.equalsIgnoreCase("false")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // ---------- Columnas numéricas ----------
+
+    public double getMedia(String nombre) {
+        Double[] valores = columnasNumeros.get(nombre);
+        double suma = 0;
+        for (double x : valores) suma += x;
+        return suma / valores.length;
+    }
+
+    /** Desviación estándar muestral (n - 1). */
+    public double getDesviacionEstandar(String nombre) {
+        Double[] valores = columnasNumeros.get(nombre);
+        if (valores.length < 2) return 0;
+        double media = getMedia(nombre);
+        double suma = 0;
+        for (double x : valores) suma += (x - media) * (x - media);
+        return Math.sqrt(suma / (valores.length - 1));
+    }
+
+    /** Cuantil con interpolación lineal. p va de 0 (mínimo) a 1 (máximo). */
+    public double getCuantil(String nombre, double p) {
+        double[] v = valoresOrdenados(nombre);
+        double pos = p * (v.length - 1);
+        int inferior = (int) Math.floor(pos);
+        int superior = (int) Math.ceil(pos);
+        return v[inferior] + (pos - inferior) * (v[superior] - v[inferior]);
+    }
+
+    public double getMinimo(String nombre) {
+        return getCuantil(nombre, 0);
+    }
+
+    public double getMaximo(String nombre) {
+        return getCuantil(nombre, 1);
+    }
+
+    /**
+     * Conteo de valores en cubetas de igual ancho entre el mínimo y el máximo.
+     * El máximo cae en la última cubeta.
+     */
+    public int[] getHistograma(String nombre, int cubetas) {
+        double[] v = valoresOrdenados(nombre);
+        double minimo = v[0];
+        double ancho = (v[v.length - 1] - minimo) / cubetas;
+        int[] conteo = new int[cubetas];
+        for (double x : v) {
+            int i = (ancho == 0) ? 0 : (int) ((x - minimo) / ancho);
+            conteo[Math.min(i, cubetas - 1)]++;
+        }
+        return conteo;
+    }
+
+    private double[] valoresOrdenados(String nombre) {
+        Double[] valores = columnasNumeros.get(nombre);
+        double[] copia = new double[valores.length];
+        for (int i = 0; i < copia.length; i++) copia[i] = valores[i];
+        Arrays.sort(copia);
+        return copia;
+    }
+
+    // ---------- Columnas de texto y booleanas ----------
+
+    /** Cuántas veces aparece cada valor, en orden de primera aparición. */
+    public Map<String, Integer> getFrecuencias(String nombre) {
+        Map<String, Integer> frecuencias = new LinkedHashMap<>();
+        for (String valor : columnasTexto.get(nombre)) {
+            frecuencias.merge(valor, 1, Integer::sum);
+        }
+        return frecuencias;
+    }
+
+    public int getValoresUnicos(String nombre) {
+        return getFrecuencias(nombre).size();
+    }
+
+    public String getMasComun(String nombre) {
+        String masComun = null;
+        int mayor = 0;
+        for (Map.Entry<String, Integer> entrada : getFrecuencias(nombre).entrySet()) {
+            if (entrada.getValue() > mayor) {
+                mayor = entrada.getValue();
+                masComun = entrada.getKey();
+            }
+        }
+        return masComun;
     }
 
 
