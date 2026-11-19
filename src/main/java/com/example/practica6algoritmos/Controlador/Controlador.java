@@ -1,19 +1,28 @@
 package com.example.practica6algoritmos.Controlador;
 
 import com.example.practica6algoritmos.Modelo.Cancion;
+import com.example.practica6algoritmos.Modelo.ConjuntoDatos;
+import com.example.practica6algoritmos.Modelo.GestorArchivo;
 import com.example.practica6algoritmos.Vista.Ventana.VentanaPrincipal;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.function.Function;
 
 public class Controlador {
     private Stage stage;
     private VentanaPrincipal ventana;
+    private ConjuntoDatos conjuntoDatos;
 
-    public Controlador(Stage stage) {
-        this.stage = stage;
+
+    public Controlador(Stage stage) throws IOException {
+        conjuntoDatos = new ConjuntoDatos();
+
+        ventana = new VentanaPrincipal(conjuntoDatos.getNombresColumnas());
+        ventana.getSeccionTabla().mostrarCanciones(conjuntoDatos.getCanciones());
 
 
         Scene escena = new Scene(ventana.getVentana(), 800, 600);

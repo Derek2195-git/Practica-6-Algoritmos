@@ -15,7 +15,7 @@ public enum TipoGrafica {
 
     private static final Set<String> COLUMNAS_PASTEL = Set.of("spotify_track_explicit");
 
-    /** Todo lo que no esté en las listas de arriba (columnas de texto) queda sin gráfica. */
+    /** Lo que no esté en las listas de arriba (columnas de texto) queda sin gráfica. */
     public static TipoGrafica deColumna(String columna) {
         if (COLUMNAS_BARRAS.contains(columna)) return BARRAS;
         if (COLUMNAS_PASTEL.contains(columna)) return PASTEL;

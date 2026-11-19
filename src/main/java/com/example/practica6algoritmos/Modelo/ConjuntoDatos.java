@@ -115,13 +115,13 @@ public class ConjuntoDatos {
     // ---------- Acceso ----------
 
     /** Nombres de las 33 columnas (para el combobox). */
-    public List<String> getNombresColumnas() {
-        return Arrays.asList(COLUMNAS);
+    public ArrayList<String> getNombresColumnas() {
+        return new ArrayList<String>(Arrays.asList(COLUMNAS));
     }
 
     /** Canciones en el orden original del CSV (lista no modificable). */
-    public List<Cancion> getCanciones() {
-        return Collections.unmodifiableList(canciones);
+    public ArrayList<Cancion> getCanciones() {
+        return canciones;
     }
 
     public int getNumeroFilas() {
