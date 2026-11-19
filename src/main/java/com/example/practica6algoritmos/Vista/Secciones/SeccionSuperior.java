@@ -32,7 +32,7 @@ public class SeccionSuperior {
         ordenamientoASeleccionar = new ComboBox<>();
         botonOrdenar = new Button("Ordenar");
         botonRestablecer = new Button("Restablecer");
-        checkBoxCompararConMetodos = new CheckBox("Comparar con otros ordenamientos");
+        checkBoxCompararConMetodos = new CheckBox("Comparar ordenamientos");
         botonMostrarGrafica = new Button("Graficar");
         tiempoOrdenamiento = new Label("--");
         ocupado = new SimpleBooleanProperty(false);
@@ -72,9 +72,9 @@ public class SeccionSuperior {
         ordenamientoASeleccionar.getItems().setAll(Metodo.values());   // se ve con Metodo.toString()
         ordenamientoASeleccionar.setValue(Metodo.QUICKSORT);
 
-        columnaASeleccionar.disableProperty().bind(
+        columnaASeleccionar.disableProperty().bind(ocupado);
+        ordenamientoASeleccionar.disableProperty().bind(
                 ocupado.or(checkBoxCompararConMetodos.selectedProperty()));
-        ordenamientoASeleccionar.disableProperty().bind(ocupado);
 
     }
 
@@ -84,6 +84,10 @@ public class SeccionSuperior {
         checkBoxCompararConMetodos.disableProperty().bind(ocupado);
         botonMostrarGrafica.disableProperty().bind(
                 ocupado.or(tiemposDisponibles.not()).or(columnaSinGrafica));
+    }
+
+    public void setDetalleTiempos(String texto) {
+        tiempoOrdenamiento.setTooltip(texto == null || texto.isEmpty() ? null : new Tooltip(texto));
     }
 
     public String getColumnaSeleccionada() {
