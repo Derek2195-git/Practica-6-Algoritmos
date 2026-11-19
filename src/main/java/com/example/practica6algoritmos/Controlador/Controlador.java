@@ -1,14 +1,26 @@
 package com.example.practica6algoritmos.Controlador;
 
 import com.example.practica6algoritmos.Modelo.Cancion;
+import com.example.practica6algoritmos.Vista.Ventana.VentanaPrincipal;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 import java.util.Comparator;
 import java.util.function.Function;
 
 public class Controlador {
+    private Stage stage;
+    private VentanaPrincipal ventana;
 
-    public Controlador() {
+    public Controlador(Stage stage) {
+        this.stage = stage;
 
+
+        Scene escena = new Scene(ventana.getVentana(), 800, 600);
+
+        stage.setTitle("CSV");
+        stage.setScene(escena);
+        stage.show();
     }
 
     /**
