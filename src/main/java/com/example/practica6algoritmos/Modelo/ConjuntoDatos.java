@@ -1,271 +1,144 @@
 package com.example.practica6algoritmos.Modelo;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+/** El dataset convertido en canciones, en el orden original del CSV. */
 public class ConjuntoDatos {
-    private final char SEPARADOR = ',';
+    /** Las 33 columnas, en el mismo orden que los parámetros del constructor de Cancion. */
+    private static final String[] COLUMNAS = {
+            "song_id", "performer", "song", "spotify_genre", "spotify_track_id",
+            "spotify_track_preview_url", "spotify_track_duration_ms", "spotify_track_explicit",
+            "spotify_track_album", "danceability", "energy", "key", "loudness", "mode",
+            "speechiness", "acousticness", "instrumentalness", "liveness", "valence", "tempo",
+            "time_signature", "spotify_track_popularity", "peak_position", "weeks_on_chart",
+            "first_week", "last_week", "chart_success_tier", "hit_longevity_profile",
+            "acoustic_mood_cluster", "musical_era", "evidence_span", "cot_rationale",
+            "confidence_score"
+    };
 
-    private ArrayList<String> nombresColumnas;
-    private HashMap<String, Double[]> columnasNumeros;
-    private HashMap<String, String[]> columnasTexto;
-    private int numeroFilas = 0;
+    private final ArrayList<Cancion> canciones = new ArrayList<>();
     private int filasDescartadas = 0;
 
     public ConjuntoDatos() throws IOException {
-        nombresColumnas = new ArrayList<>();
-        columnasNumeros = new HashMap<>();
-        columnasTexto = new HashMap<>();
-        ArrayList<String[]> filas = leerCSV();
+        this(new GestorArchivo());
+    }
+
+    public ConjuntoDatos(GestorArchivo gestor) throws IOException {
+        List<String[]> filas = gestor.leerFilas();
         if (filas.isEmpty()) {
-            throw new IOException("El archivo proporcionado está vacio o no se encontró." );
+            throw new IOException("El archivo proporcionado está vacío o no se encontró.");
         }
         String[] encabezado = filas.get(0);
-        ArrayList<String[]> registros = new ArrayList<>();
+        int[] posiciones = ubicarColumnas(encabezado);
+
         for (int i = 1; i < filas.size(); i++) {
-            if (filas.get(i).length == encabezado.length) {
-                registros.add(filas.get(i));
-            } else {
+            String[] fila = filas.get(i);
+            if (fila.length != encabezado.length) {   // fila mal formada
                 filasDescartadas++;
+                continue;
             }
-        }
-        numeroFilas = registros.size();
-        for (int c = 0; c < encabezado.length; c++) {
-            crearColumna(encabezado[c].trim(), c, registros);
-        }
-
-    }
-
-    public ArrayList<String[]> leerCSV() throws IOException {
-        InputStream flujo = getClass().getResourceAsStream("/recursos/dataset.csv");
-        if (flujo == null) {
-            throw new FileNotFoundException("No se encontró el recurso.");
-        }
-        ArrayList<String[]> filas = new ArrayList<>();
-
-        try (BufferedReader lector = new BufferedReader(
-                new InputStreamReader(flujo, StandardCharsets.UTF_8)
-        )) {
-            String linea;
-            while ((linea = lector.readLine()) != null) {
-                StringBuilder registro = new StringBuilder(linea);
-                while (comillasImpares(registro)) {
-                    String siguiente = lector.readLine();
-                    if (siguiente == null) break;
-                    registro.append("\n").append(siguiente);
-                }
-                if (registro.toString().isBlank()) continue;
-                filas.add(dividirLinea(registro.toString()));
+            // f[c] es el valor de la columna COLUMNAS[c], venga donde venga en el CSV
+            String[] f = new String[COLUMNAS.length];
+            for (int c = 0; c < f.length; c++) {
+                f[c] = fila[posiciones[c]];
             }
+            canciones.add(new Cancion(
+                    aTexto(f[0]), aTexto(f[1]), aTexto(f[2]), aTexto(f[3]), aTexto(f[4]),
+                    aTexto(f[5]), aEntero(f[6]), aBoolean(f[7]), aTexto(f[8]), aDouble(f[9]),
+                    aDouble(f[10]), aEntero(f[11]), aDouble(f[12]), aEntero(f[13]),
+                    aDouble(f[14]), aDouble(f[15]), aDouble(f[16]), aDouble(f[17]),
+                    aDouble(f[18]), aDouble(f[19]), aEntero(f[20]), aEntero(f[21]),
+                    aEntero(f[22]), aEntero(f[23]), aTexto(f[24]), aTexto(f[25]),
+                    aTexto(f[26]), aTexto(f[27]), aTexto(f[28]), aTexto(f[29]),
+                    aTexto(f[30]), aTexto(f[31]), aDouble(f[32])));
         }
-
-        return filas;
     }
 
-    private boolean comillasImpares(StringBuilder registro) {
-        int cuenta = 0;
-        for (int i = 0; i < registro.length(); i++) {
-            if (registro.charAt(i) == '"') cuenta++;
+    /** Para cada columna de COLUMNAS, en qué posición viene en el CSV. */
+    private int[] ubicarColumnas(String[] encabezado) throws IOException {
+        Map<String, Integer> indices = new HashMap<>();
+        for (int i = 0; i < encabezado.length; i++) {
+            indices.put(encabezado[i].trim().toLowerCase(), i);
         }
-        return cuenta % 2 != 0;
-    }
-
-    private String[] dividirLinea(String linea) {
-        ArrayList<String> campos = new ArrayList<>();
-        StringBuilder campo = new StringBuilder();
-        boolean entreComillas = false;
-        for (int i = 0; i < linea.length(); i++) {
-            char caracter = linea.charAt(i);
-            if (caracter == '"') {
-                if (entreComillas && i + 1 < linea.length() && linea.charAt(i+1) == '"') {
-                    campo.append('"');
-                    i++;
-                } else {
-                    entreComillas = !entreComillas;
-                }
-            } else if(caracter == SEPARADOR && !entreComillas) {
-                campos.add(campo.toString());
-                campo.setLength(0);
-            } else {
-                campo.append(caracter);
+        int[] posiciones = new int[COLUMNAS.length];
+        for (int c = 0; c < COLUMNAS.length; c++) {
+            Integer indice = indices.get(COLUMNAS[c]);
+            if (indice == null) {
+                throw new IOException("No se encontró la columna «" + COLUMNAS[c]
+                        + "» en el encabezado del CSV.");
             }
+            posiciones[c] = indice;
         }
-        campos.add(campo.toString());
-        return campos.toArray(new String[0]);
+        return posiciones;
     }
 
-    private void crearColumna(String nombre, int indice, ArrayList<String[]> registros) {
-        ArrayList<String> valores = new ArrayList<>();
-        for (String[] registro : registros) {
-            String valor = registro[indice].trim();
-            if (!esVacio(valor)) valores.add(valor);
-        }
-        nombresColumnas.add(nombre);
+    // ---------- Conversión de los campos del CSV (vacío -> null) ----------
 
-        Double[] numeros = convertirANumeros(valores);
-        if (numeros != null) {
-            columnasNumeros.put(nombre, numeros);
-        } else {
-            columnasTexto.put(nombre, valores.toArray(new String[0]));
-        }
+    private static String aTexto(String valor) {
+        if (valor == null) return null;
+        String limpio = valor.trim();
+        boolean vacio = limpio.isEmpty() || limpio.equalsIgnoreCase("NA")
+                || limpio.equalsIgnoreCase("NaN") || limpio.equalsIgnoreCase("null");
+        return vacio ? null : limpio;
     }
 
-    private boolean esVacio(String valor) {
-        return valor.isEmpty() || valor.equalsIgnoreCase("NA") ||
-                valor.equalsIgnoreCase("NaN") || valor.equalsIgnoreCase("null");
-    }
-
-    private Double[] convertirANumeros(ArrayList<String> valores) {
-        if (valores.isEmpty()) return null;
-        Double[] numeros = new Double[valores.size()];
-
+    private static Double aDouble(String valor) {
+        String texto = aTexto(valor);
+        if (texto == null) return null;
         try {
-            for (int i = 0; i < numeros.length; i++) {
-                numeros[i] = Double.parseDouble(valores.get(i));
-            }
+            return Double.valueOf(texto);
         } catch (NumberFormatException e) {
             return null;
         }
-        return numeros;
     }
 
-    public ArrayList<String> getNombresColumnas() {
-        return nombresColumnas;
+    /** "201573.0" -> 201573 (el CSV guarda los enteros con decimales). */
+    private static Integer aEntero(String valor) {
+        Double numero = aDouble(valor);
+        return numero == null ? null : (int) Math.round(numero);
     }
 
-    public boolean esColumnaNumerica(String nombre) {
-        return columnasNumeros.containsKey(nombre);
+    private static Boolean aBoolean(String valor) {
+        String texto = aTexto(valor);
+        if (texto == null) return null;
+        if (texto.equalsIgnoreCase("true")) return Boolean.TRUE;
+        if (texto.equalsIgnoreCase("false")) return Boolean.FALSE;
+        return null;
     }
 
-    public Double[] getColumnaNumerica(String nombre) {
-        return columnasNumeros.get(nombre);
+    // ---------- Acceso ----------
+
+    /** Nombres de las 33 columnas (para el combobox). */
+    public List<String> getNombresColumnas() {
+        return Arrays.asList(COLUMNAS);
     }
 
-    public String[] getColumnaTexto(String nombre) {
-        return columnasTexto.get(nombre);
+    /** Canciones en el orden original del CSV (lista no modificable). */
+    public List<Cancion> getCanciones() {
+        return Collections.unmodifiableList(canciones);
     }
 
     public int getNumeroFilas() {
-        return numeroFilas;
+        return canciones.size();
     }
 
     public int getFilasDescartadas() {
         return filasDescartadas;
     }
 
-    // ---------- Validez (Valid / Missing en Kaggle) ----------
-
-    public int getValoresValidos(String nombre) {
-        return esColumnaNumerica(nombre)
-                ? columnasNumeros.get(nombre).length
-                : columnasTexto.get(nombre).length;
+    /** Copia de todas las canciones para ordenarla sin alterar el orden original (Restablecer). */
+    public Cancion[] crearCopiaOrdenable() {
+        return canciones.toArray(new Cancion[0]);
     }
 
-    public int getValoresFaltantes(String nombre) {
-        return numeroFilas - getValoresValidos(nombre);
+    /** Copia de las primeras n canciones (o de todas si n es mayor). */
+    public Cancion[] crearCopiaOrdenable(int n) {
+        return Arrays.copyOf(crearCopiaOrdenable(), Math.min(n, canciones.size()));
     }
-
-    // ---------- Columnas booleanas ----------
-
-    /** true si todos los valores válidos de una columna de texto son "true" o "false". */
-    public boolean esColumnaBooleana(String nombre) {
-        String[] valores = columnasTexto.get(nombre);
-        if (valores == null || valores.length == 0) return false;
-        for (String valor : valores) {
-            if (!valor.equalsIgnoreCase("true") && !valor.equalsIgnoreCase("false")) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // ---------- Columnas numéricas ----------
-
-    public double getMedia(String nombre) {
-        Double[] valores = columnasNumeros.get(nombre);
-        double suma = 0;
-        for (double x : valores) suma += x;
-        return suma / valores.length;
-    }
-
-    /** Desviación estándar muestral (n - 1). */
-    public double getDesviacionEstandar(String nombre) {
-        Double[] valores = columnasNumeros.get(nombre);
-        if (valores.length < 2) return 0;
-        double media = getMedia(nombre);
-        double suma = 0;
-        for (double x : valores) suma += (x - media) * (x - media);
-        return Math.sqrt(suma / (valores.length - 1));
-    }
-
-    /** Cuantil con interpolación lineal. p va de 0 (mínimo) a 1 (máximo). */
-    public double getCuantil(String nombre, double p) {
-        double[] v = valoresOrdenados(nombre);
-        double pos = p * (v.length - 1);
-        int inferior = (int) Math.floor(pos);
-        int superior = (int) Math.ceil(pos);
-        return v[inferior] + (pos - inferior) * (v[superior] - v[inferior]);
-    }
-
-    public double getMinimo(String nombre) {
-        return getCuantil(nombre, 0);
-    }
-
-    public double getMaximo(String nombre) {
-        return getCuantil(nombre, 1);
-    }
-
-    /**
-     * Conteo de valores en cubetas de igual ancho entre el mínimo y el máximo.
-     * El máximo cae en la última cubeta.
-     */
-    public int[] getHistograma(String nombre, int cubetas) {
-        double[] v = valoresOrdenados(nombre);
-        double minimo = v[0];
-        double ancho = (v[v.length - 1] - minimo) / cubetas;
-        int[] conteo = new int[cubetas];
-        for (double x : v) {
-            int i = (ancho == 0) ? 0 : (int) ((x - minimo) / ancho);
-            conteo[Math.min(i, cubetas - 1)]++;
-        }
-        return conteo;
-    }
-
-    private double[] valoresOrdenados(String nombre) {
-        Double[] valores = columnasNumeros.get(nombre);
-        double[] copia = new double[valores.length];
-        for (int i = 0; i < copia.length; i++) copia[i] = valores[i];
-        Arrays.sort(copia);
-        return copia;
-    }
-
-    // ---------- Columnas de texto y booleanas ----------
-
-    /** Cuántas veces aparece cada valor, en orden de primera aparición. */
-    public Map<String, Integer> getFrecuencias(String nombre) {
-        Map<String, Integer> frecuencias = new LinkedHashMap<>();
-        for (String valor : columnasTexto.get(nombre)) {
-            frecuencias.merge(valor, 1, Integer::sum);
-        }
-        return frecuencias;
-    }
-
-    public int getValoresUnicos(String nombre) {
-        return getFrecuencias(nombre).size();
-    }
-
-    public String getMasComun(String nombre) {
-        String masComun = null;
-        int mayor = 0;
-        for (Map.Entry<String, Integer> entrada : getFrecuencias(nombre).entrySet()) {
-            if (entrada.getValue() > mayor) {
-                mayor = entrada.getValue();
-                masComun = entrada.getKey();
-            }
-        }
-        return masComun;
-    }
-
-
 }
