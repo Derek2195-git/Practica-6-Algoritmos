@@ -1,8 +1,10 @@
 package com.example.practica6algoritmos.Vista.Secciones;
 
-public class SeccionSuperior {
+import javafx.scene.layout.HBox;
+
+public class SeccionSuperior extends HBox {
 
     public SeccionSuperior() {
-
+        super(12);
     }
 }
