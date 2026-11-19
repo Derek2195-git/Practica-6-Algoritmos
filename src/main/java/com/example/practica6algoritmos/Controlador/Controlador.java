@@ -110,7 +110,6 @@ public class Controlador {
     private void cambiarColumna(String columna) {
         tiempos.clear();
         ventana.getSeccionTabla().mostrarCanciones(conjuntoDatos.getCanciones());
-        ventana.getSeccionTabla().mostrarColumna(columna);
         mostrarTiempos();
     }
 
@@ -162,7 +161,6 @@ public class Controlador {
         tiempos.putAll(resultados);
         if (ordenadas != null) {
             ventana.getSeccionTabla().mostrarCanciones(new ArrayList<>(Arrays.asList(ordenadas)));
-            ventana.getSeccionTabla().mostrarColumna(columna);
         }
         mostrarTiempos();
         ventana.getSeccionSuperior().setOcupado(false);

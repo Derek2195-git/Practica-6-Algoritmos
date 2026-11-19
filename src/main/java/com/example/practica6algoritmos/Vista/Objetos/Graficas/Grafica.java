@@ -3,6 +3,7 @@ package com.example.practica6algoritmos.Vista.Objetos.Graficas;
 import com.example.practica6algoritmos.Modelo.Metodo;
 import javafx.scene.Node;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public abstract class Grafica {
@@ -21,5 +22,7 @@ public abstract class Grafica {
         return "metodo-" + metodo.name().toLowerCase();
     }
 
+    public abstract void cargarValores(ArrayList<Double> valores);
 
+    public abstract void convertirACelda();
 }

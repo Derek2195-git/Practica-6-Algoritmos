@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class GraficaPastel extends Grafica {
@@ -49,5 +50,15 @@ public class GraficaPastel extends Grafica {
     @Override
     public Node getGrafica() {
         return grafica;
+    }
+
+    @Override
+    public void cargarValores(ArrayList<Double> valores) {
+
+    }
+
+    @Override
+    public void convertirACelda() {
+
     }
 }
