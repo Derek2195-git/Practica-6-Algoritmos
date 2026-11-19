@@ -56,9 +56,9 @@ public class Cancion implements Comparable<Cancion> {
      * @param spotify_track_album Album de la canción
      * @param danceability Que tan bailable es la canción en una escala del 0 a 1
      * @param energy Que tan energetica es la canción en una escala del 0 a 1
-     * @param key
-     * @param loudness
-     * @param mode
+     * @param key No se que sea esto
+     * @param loudness Indice de que tan ruidosa es la música
+     * @param mode Modo
      * @param speechiness
      * @param acousticness
      * @param instrumentalness

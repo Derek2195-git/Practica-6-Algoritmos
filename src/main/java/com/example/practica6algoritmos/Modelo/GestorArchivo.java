@@ -3,7 +3,7 @@ package com.example.practica6algoritmos.Modelo;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList;
 
 /** Lee el CSV y lo convierte en filas de campos. No sabe nada de canciones. */
 public class GestorArchivo {
@@ -20,28 +20,22 @@ public class GestorArchivo {
     }
 
     /**
-     * Este metodo lee todas las
-     * @return
-     * @throws IOException
+     * Metodo que obtiene todas las filas del archivo y las compila en un arraylist
+     * @return ArrayList con cada fila existente en el archivo
+     * @throws IOException Error que pueda ocurrir cuando no se encuentre el archivo
      */
-    public List<String[]> leerFilas() throws IOException {
+    public ArrayList<String[]> leerFilas() throws IOException {
         InputStream flujo = getClass().getResourceAsStream(ruta);
         if (flujo == null) {
             throw new FileNotFoundException("No se encontró el recurso " + ruta
                     + " (debe estar en src/main/resources/recursos/dataset.csv).");
         }
-        List<String[]> filas = new ArrayList<>();
+        ArrayList<String[]> filas = new ArrayList<>();
 
         try (BufferedReader lector = new BufferedReader(
                 new InputStreamReader(flujo, StandardCharsets.UTF_8))) {
             String linea;
-            boolean primera = true;
             while ((linea = lector.readLine()) != null) {
-                if (primera) {
-                    // Algunos programas agregan una marca invisible (BOM) al inicio del archivo.
-                    if (!linea.isEmpty() && linea.charAt(0) == '\uFEFF') linea = linea.substring(1);
-                    primera = false;
-                }
                 StringBuilder registro = new StringBuilder(linea);
                 // Un campo entre comillas puede contener saltos de línea.
                 while (comillasImpares(registro)) {
@@ -56,6 +50,12 @@ public class GestorArchivo {
         return filas;
     }
 
+    /**
+     * Metodo que revisa el archivo con el fin de revisar
+     * si una linea posee una cantidad impar de comillas
+     * @param registro El atributo que almacena las lineas del csv a si mismo
+     * @return booleano que indica si hay una cantidad par o impar de comilllas
+     */
     private boolean comillasImpares(StringBuilder registro) {
         int cuenta = 0;
         for (int i = 0; i < registro.length(); i++) {
@@ -64,6 +64,11 @@ public class GestorArchivo {
         return cuenta % 2 != 0;
     }
 
+    /**
+     * Metodo que divide el contenido de una linea del CSV y la almacena en un Arreglo
+     * @param linea Linea del archivo a dividir en varios pedazos
+     * @return Arreglo con la linea actual del archivo dividida por el separador
+     */
     private String[] dividirLinea(String linea) {
         ArrayList<String> campos = new ArrayList<>();
         StringBuilder campo = new StringBuilder();

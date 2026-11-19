@@ -8,14 +8,21 @@ public enum Metodo {
     ARRAYSORT("Arrays.sort()"),
     PARALLELSORT("Arrays.parallelSort()");
 
-
+    // Nombre del arreglo para la vista
     private final String nombre;
 
+    /**
+     * Constructor de la enumeración
+     * @param nombre
+     */
     Metodo(String nombre) {
         this.nombre = nombre;
     }
 
-    /** Nombre legible para mostrar en la tabla, la gráfica o los botones. */
+    /**
+     * Getter del nombre del metodo
+     * @return Nombre del metodo usado
+     */
     public String getNombre() {
         return nombre;
     }

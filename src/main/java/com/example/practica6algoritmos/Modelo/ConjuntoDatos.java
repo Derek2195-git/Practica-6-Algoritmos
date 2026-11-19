@@ -24,18 +24,20 @@ public class ConjuntoDatos {
 
     // Todas las canciones del dataset se encuentran en este arraylist
     private final ArrayList<Cancion> canciones = new ArrayList<>();
-
     private int filasDescartadas = 0;
 
-    public ConjuntoDatos() throws IOException {
-        this(new GestorArchivo());
-    }
 
-    public ConjuntoDatos(GestorArchivo gestor) throws IOException {
-        List<String[]> filas = gestor.leerFilas();
+    /**
+     * Constructor de la lógica principal del programa
+     * @throws IOException
+     */
+    public ConjuntoDatos() throws IOException {
+        GestorArchivo gestor = new GestorArchivo();
+        ArrayList<String[]> filas = gestor.leerFilas();
         if (filas.isEmpty()) {
             throw new IOException("El archivo proporcionado está vacío o no se encontró.");
         }
+        // Encabezados de cada columna
         String[] encabezado = filas.get(0);
         int[] posiciones = ubicarColumnas(encabezado);
 
@@ -80,8 +82,13 @@ public class ConjuntoDatos {
         return posiciones;
     }
 
-    // ---------- Conversión de los campos del CSV (vacío -> null) ----------
 
+    /**
+     * Metodo que convierte una cadena del archivo CSV a una forma más limpia
+     * y coherente de entender
+     * @param valor Valor a convertir a una cadena
+     * @return Cadena formada a partir del valor dado
+     */
     private static String aTexto(String valor) {
         if (valor == null) return null;
         String limpio = valor.trim();
@@ -90,6 +97,11 @@ public class ConjuntoDatos {
         return vacio ? null : limpio;
     }
 
+    /**
+     * Metodo que convierte una cadena de una columna a un número decimal
+     * @param valor Valor a convertir
+     * @return Numero en decimal que representa al valor dado
+     */
     private static Double aDouble(String valor) {
         String texto = aTexto(valor);
         if (texto == null) return null;
@@ -100,12 +112,21 @@ public class ConjuntoDatos {
         }
     }
 
-    /** "201573.0" -> 201573 (el CSV guarda los enteros con decimales). */
+    /**
+     * Metodo que convierte una cadena dado a un número entero
+     * @param valor Valor dado por el usuario
+     * @return Número entero que representa al valor dado
+     */
     private static Integer aEntero(String valor) {
         Double numero = aDouble(valor);
         return numero == null ? null : (int) Math.round(numero);
     }
 
+    /**
+     * Metodo que convierte una cadena en un valor tipo booleano
+     * @param valor Cadena a convertir
+     * @return Booleano que representa a la cadena dada
+     */
     private static Boolean aBoolean(String valor) {
         String texto = aTexto(valor);
         if (texto == null) return null;
@@ -114,33 +135,29 @@ public class ConjuntoDatos {
         return null;
     }
 
-    // ---------- Acceso ----------
 
-    /** Nombres de las 33 columnas (para el combobox). */
+    /**
+     * Metodo que da todos los nombres de cada columna
+     */
     public ArrayList<String> getNombresColumnas() {
         return new ArrayList<String>(Arrays.asList(COLUMNAS));
     }
 
-    /** Canciones en el orden original del CSV (lista no modificable). */
+    /**
+     * Metodo que da el arreglo del archivo csv sobre el cual trabajaremos
+     * @return ArrayList de todas las canciones encontradas en el CSV
+     */
     public ArrayList<Cancion> getCanciones() {
         return canciones;
     }
 
-    public int getNumeroFilas() {
-        return canciones.size();
-    }
-
-    public int getFilasDescartadas() {
-        return filasDescartadas;
-    }
-
-    /** Copia de todas las canciones para ordenarla sin alterar el orden original (Restablecer). */
+    /**
+     * Metodo que copia todos los valores del ArrayList a un arreglo
+     * con el fin de no alterar el valor original de este y que se puedan usar varios
+     * ordenamientos
+     * @return Arreglo con las canciones dadas
+     */
     public Cancion[] crearCopiaOrdenable() {
         return canciones.toArray(new Cancion[0]);
-    }
-
-    /** Copia de las primeras n canciones (o de todas si n es mayor). */
-    public Cancion[] crearCopiaOrdenable(int n) {
-        return Arrays.copyOf(crearCopiaOrdenable(), Math.min(n, canciones.size()));
     }
 }
