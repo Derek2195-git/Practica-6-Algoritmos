@@ -8,6 +8,7 @@ public enum Metodo {
     ARRAYSORT("Arrays.sort()"),
     PARALLELSORT("Arrays.parallelSort()");
 
+
     private final String nombre;
 
     Metodo(String nombre) {

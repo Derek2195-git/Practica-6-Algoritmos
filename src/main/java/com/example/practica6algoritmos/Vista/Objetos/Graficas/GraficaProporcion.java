@@ -1,4 +1,4 @@
-package com.example.practica6algoritmos.Vista.Objetos;
+package com.example.practica6algoritmos.Vista.Objetos.Graficas;
 
 import com.example.practica6algoritmos.Modelo.Metodo;
 import javafx.geometry.Insets;

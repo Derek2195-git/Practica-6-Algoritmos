@@ -1,7 +1,7 @@
 package com.example.practica6algoritmos.Vista.Secciones;
 
 import com.example.practica6algoritmos.Modelo.Metodo;
-import com.example.practica6algoritmos.Vista.Objetos.TipoGrafica;
+import com.example.practica6algoritmos.Vista.Objetos.Graficas.TipoGrafica;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
@@ -61,7 +61,7 @@ public class SeccionSuperior {
         columnaASeleccionar.setVisibleRowCount(12);
         columnaASeleccionar.getItems().setAll(columnas);
         columnaASeleccionar.valueProperty().addListener((obs, ant, nueva) -> {
-            columnaSinGrafica.set(nueva == null || TipoGrafica.deColumna(nueva) == TipoGrafica.SIN_GRAFICA);
+            columnaSinGrafica.set(nueva == null);
             tiemposDisponibles.set(false);
             tiempoOrdenamiento.setText("--");
             if (cambiarColumna != null && nueva != null) cambiarColumna.accept(nueva);

@@ -8,12 +8,20 @@ public class ComparadorTiempos<T extends Comparable<T>> {
     private final Ordenamientos<T> ordenamientos;
     private final Metodo metodo;
 
+    /**
+     * Constructor del comparador de tiempos
+     * @param metodo Metodo de ordenamiento a usar
+     */
     public ComparadorTiempos(Metodo metodo) {
         this.ordenamientos = new Ordenamientos<>();
-        this.metodo = Objects.requireNonNull(metodo, "El método de ordenamiento no puede ser null");
+        this.metodo = metodo;
     }
 
-    /** Ordena arr (en sitio) y devuelve los nanosegundos que tardó. Pásale siempre una copia. */
+    /**
+     * Mide el tiempo empleado en realizar un ordenamiento
+     * @param arr Arreglo a ordenar
+     * @return Tiempo en un tipo de dato Long el cual mide el tiempo tomado en ordenar el arreglo
+     */
     public long medirTiempo(T[] arr) {
         long tiempoInicio = System.nanoTime();
         switch (metodo) {

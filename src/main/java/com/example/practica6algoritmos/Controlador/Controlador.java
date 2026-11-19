@@ -1,10 +1,8 @@
 package com.example.practica6algoritmos.Controlador;
 
 import com.example.practica6algoritmos.Modelo.*;
-import com.example.practica6algoritmos.Vista.Objetos.Grafica;
-import com.example.practica6algoritmos.Vista.Objetos.TipoGrafica;
-import com.example.practica6algoritmos.Vista.Secciones.SeccionSuperior;
-import com.example.practica6algoritmos.Vista.Secciones.SeccionTabla;
+import com.example.practica6algoritmos.Vista.Objetos.Graficas.Grafica;
+import com.example.practica6algoritmos.Vista.Objetos.Graficas.TipoGrafica;
 import com.example.practica6algoritmos.Vista.Ventana.VentanaGrafica;
 import com.example.practica6algoritmos.Vista.Ventana.VentanaPrincipal;
 import javafx.application.Platform;
@@ -42,7 +40,7 @@ public class Controlador {
         ventana.getSeccionSuperior().alOrdenar(this::ordenarTabla);
         ventana.getSeccionSuperior().alCambiarColumna(this::cambiarColumna);
 
-        stage.setTitle("CSV");
+        stage.setTitle("Ordenamientos sobre un dataset");
         stage.setScene(escena);
         stage.show();
     }
@@ -214,7 +212,7 @@ public class Controlador {
         String columna = ventana.getSeccionSuperior().getColumnaSeleccionada();
         if (columna == null || tiempos.isEmpty()) return;
         if (ventanaGrafica == null) ventanaGrafica = new VentanaGrafica(stage);
-        ventanaGrafica.mostrar(columna, TipoGrafica.deColumna(columna), tiempos);
+        ventanaGrafica.mostrar(columna, TipoGrafica.BARRAS, tiempos);
     }
 
 }

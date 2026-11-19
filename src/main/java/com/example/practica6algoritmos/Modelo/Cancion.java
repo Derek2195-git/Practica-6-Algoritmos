@@ -3,9 +3,7 @@ package com.example.practica6algoritmos.Modelo;
 import java.util.Comparator;
 
 /**
- * Una fila del dataset. Solo guarda lo que traía el CSV: lo que faltaba queda en null.
- * Es Comparable solo para poder usar los ordenamientos genéricos: la comparación real
- * la define el criterio que asigne el controlador con setCriterio().
+ * Clase que engloba una fila del dataset
  */
 public class Cancion implements Comparable<Cancion> {
     // Criterio con el que se comparan las canciones (se asigna antes de cada ordenamiento).
@@ -45,11 +43,42 @@ public class Cancion implements Comparable<Cancion> {
     private final String cot_rationale;
     private final Double confidence_score;
 
-
-    public static void setCriterio(Comparator<Cancion> nuevoCriterio) {
-        criterio = nuevoCriterio;
-    }
-
+    /**
+     * Constructor de una clase la cual engloba a una canción del CSV
+     * @param song_id Id de la cancion
+     * @param performer Cantante de la cancion
+     * @param song Canción
+     * @param spotify_genre Genero de la canción
+     * @param spotify_track_id Track Id de la canción
+     * @param spotify_track_preview_url Enlace de la canción
+     * @param spotify_track_duration_ms Duración en MS de la canción
+     * @param spotify_track_explicit Booleano que indica si la canción es explicita
+     * @param spotify_track_album Album de la canción
+     * @param danceability Que tan bailable es la canción en una escala del 0 a 1
+     * @param energy Que tan energetica es la canción en una escala del 0 a 1
+     * @param key
+     * @param loudness
+     * @param mode
+     * @param speechiness
+     * @param acousticness
+     * @param instrumentalness
+     * @param liveness
+     * @param valence
+     * @param tempo
+     * @param time_signature
+     * @param spotify_track_popularity
+     * @param peak_position
+     * @param weeks_on_chart
+     * @param first_week
+     * @param last_week
+     * @param chart_success_tier
+     * @param hit_longevity_profile
+     * @param acoustic_mood_cluster
+     * @param musical_era
+     * @param evidence_span
+     * @param cot_rationale
+     * @param confidence_score
+     */
     public Cancion(String song_id, String performer, String song, String spotify_genre,
                    String spotify_track_id, String spotify_track_preview_url,
                    Integer spotify_track_duration_ms, Boolean spotify_track_explicit,
@@ -96,6 +125,42 @@ public class Cancion implements Comparable<Cancion> {
         this.confidence_score = confidence_score;
     }
 
+    public Cancion() {
+        this.song_id = "PLACEHOLDER NO USAR";
+        this.performer = "PLACEHOLDER NO USAR";
+        this.song = "PLACEHOLDER NO USAR";
+        this.spotify_genre = "PLACEHOLDER NO USAR";
+        this.spotify_track_id = "PLACEHOLDER NO USAR";
+        this.spotify_track_preview_url = "PLACEHOLDER NO USAR";
+        this.spotify_track_duration_ms = 1;
+        this.spotify_track_explicit = true;
+        this.spotify_track_album = "PLACEHOLDER NO USAR";
+        this.danceability = 0.5;
+        this.energy = 0.5;
+        this.key = 1;
+        this.loudness = 0.5;
+        this.mode = 1;
+        this.speechiness = 0.5;
+        this.acousticness = 0.5;
+        this.instrumentalness = 0.5;
+        this.liveness = 0.5;
+        this.valence = 0.5;
+        this.tempo = 0.5;
+        this.time_signature = 1;
+        this.spotify_track_popularity = 1;
+        this.peak_position = 1;
+        this.weeks_on_chart = 1;
+        this.first_week = "PLACEHOLDER NO USAR";
+        this.last_week = "PLACEHOLDER NO USAR";
+        this.chart_success_tier = "PLACEHOLDER NO USAR";
+        this.hit_longevity_profile = "PLACEHOLDER NO USAR";
+        this.acoustic_mood_cluster = "PLACEHOLDER NO USAR";
+        this.musical_era = "PLACEHOLDER NO USAR";
+        this.evidence_span = "PLACEHOLDER NO USAR";
+        this.cot_rationale = "PLACEHOLDER NO USAR";
+        this.confidence_score = 0.5;
+    }
+
     public String getSong_id() { return song_id; }
     public String getPerformer() { return performer; }
     public String getSong() { return song; }
@@ -130,6 +195,20 @@ public class Cancion implements Comparable<Cancion> {
     public String getCot_rationale() { return cot_rationale; }
     public Double getConfidence_score() { return confidence_score; }
 
+    /**
+     * Metodo que indica el criterio sobre el cual comparar la canción
+     * @param nuevoCriterio Nuevo criterio a usar en base al objeto de la clase Comparator
+     */
+    public static void setCriterio(Comparator<Cancion> nuevoCriterio) {
+        criterio = nuevoCriterio;
+    }
+
+    /**
+     * Metodo compare para la canción, usa el atributo de
+     * criterio para comparar canciones en base a este
+     * @param otra Canción con la que se compará la original
+     * @return Tipo de dato entero que indica si es menor, igual o mayor
+     */
     @Override
     public int compareTo(Cancion otra) {
         return criterio.compare(this, otra);

@@ -1,8 +1,8 @@
 package com.example.practica6algoritmos.Vista.Ventana;
 
 import com.example.practica6algoritmos.Modelo.Metodo;
-import com.example.practica6algoritmos.Vista.Objetos.Grafica;
-import com.example.practica6algoritmos.Vista.Objetos.TipoGrafica;
+import com.example.practica6algoritmos.Vista.Objetos.Graficas.Grafica;
+import com.example.practica6algoritmos.Vista.Objetos.Graficas.TipoGrafica;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,6 +14,7 @@ import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 
 public class VentanaGrafica extends Stage {
@@ -48,7 +49,7 @@ public class VentanaGrafica extends Stage {
         grafica.cargarTiempos(ordenados);
         ventana.setCenter(grafica.getGrafica());
 
-        for (Map.Entry<Metodo, Long> e : ordenados.entrySet()) {
+        for (HashMap.Entry<Metodo, Long> e : ordenados.entrySet()) {
             leyenda.getChildren().add(crearItemLeyenda(e.getKey(), e.getValue()));
         }
         show();
