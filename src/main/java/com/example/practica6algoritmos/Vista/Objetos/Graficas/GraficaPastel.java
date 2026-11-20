@@ -57,6 +57,10 @@ public class GraficaPastel extends Grafica {
         }
     }
 
+    /**
+     * Getter de la gráfica
+     * @return Gráfica de pastel
+     */
     @Override
     public Node getGrafica() {
         return grafica;

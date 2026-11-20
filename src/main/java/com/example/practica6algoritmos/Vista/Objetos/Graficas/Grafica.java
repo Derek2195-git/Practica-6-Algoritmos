@@ -5,17 +5,28 @@ import javafx.scene.Node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public abstract class Grafica {
     // Constante para convertir los nanosegundos a milisegundos
     protected static final double NS_A_MS = 1000000.0;
 
+    /**
+     * Metodo que carga los tiempos medidos a una gráfica
+     * @param tiemposNs HashMap con un metodo y su tiempo empleado
+     */
     public abstract void cargarTiempos(HashMap<Metodo, Long> tiemposNs);
 
-    // por si las dudas lo voy a regresar como Node, aunque sea un BarChart
+    /**
+     * Getter de la gráfica actual
+     * @return Objeto que representa a la gráfica
+     */
     public abstract Node getGrafica();
 
+    /**
+     * Metodo que convierte los nanosegundos empleados en milisegundos
+     * @param tiempo Valor de tipo Long que representa el tiempo empleado
+     * @return String que representa el tiempo convertido a milisegundos
+     */
     public static String formatearTiempo(long tiempo) {
         return String.format("%.3f ms", tiempo / NS_A_MS);
     }

@@ -7,8 +7,6 @@ import com.example.practica6algoritmos.Vista.Ventana.VentanaGrafica;
 import com.example.practica6algoritmos.Vista.Ventana.VentanaPrincipal;
 import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -25,6 +23,12 @@ public class Controlador {
     private final long TAMANO_MAXIMO = 50 * 1024 * 1024;
 
 
+    /**
+     * Constructor
+     * @param stage Stage pasado por el launcher
+     * @throws IOException Excepciones de entrada y salida generadas en caso
+     * de que el conjunto de datos no pueda abrir el csv
+     */
     public Controlador(Stage stage) throws IOException {
         this.stage = stage;
         conjuntoDatos = new ConjuntoDatos();
@@ -35,9 +39,9 @@ public class Controlador {
 
         Scene escena = new Scene(ventana.getVentana(), 800, 600);
 
-        ventana.getSeccionSuperior().alGraficar(this::graficarTabla);
+        ventana.getSeccionSuperior().alGraficar(this::graficarOrdenamientos);
         ventana.getSeccionSuperior().alRestablecer(this::restablecerTabla);
-        ventana.getSeccionSuperior().alOrdenar(this::ordenarTabla);
+        ventana.getSeccionSuperior().alOrdenar(this::ordenarColumna);
         ventana.getSeccionSuperior().alCambiarColumna(this::cambiarColumna);
 
         stage.setTitle("Ordenamientos sobre un dataset");
@@ -70,28 +74,28 @@ public class Controlador {
             case "cot_rationale" -> porTexto(Cancion::getCot_rationale);
 
             // Enteros
-            case "spotify_track_duration_ms" -> porNumeroOBool(Cancion::getSpotify_track_duration_ms);
-            case "key" -> porNumeroOBool(Cancion::getKey);
-            case "mode" -> porNumeroOBool(Cancion::getMode);
-            case "time_signature" -> porNumeroOBool(Cancion::getTime_signature);
-            case "spotify_track_popularity" -> porNumeroOBool(Cancion::getSpotify_track_popularity);
-            case "peak_position" -> porNumeroOBool(Cancion::getPeak_position);
-            case "weeks_on_chart" -> porNumeroOBool(Cancion::getWeeks_on_chart);
+            case "spotify_track_duration_ms" -> porOrdenNatural(Cancion::getSpotify_track_duration_ms);
+            case "key" -> porOrdenNatural(Cancion::getKey);
+            case "mode" -> porOrdenNatural(Cancion::getMode);
+            case "time_signature" -> porOrdenNatural(Cancion::getTime_signature);
+            case "spotify_track_popularity" -> porOrdenNatural(Cancion::getSpotify_track_popularity);
+            case "peak_position" -> porOrdenNatural(Cancion::getPeak_position);
+            case "weeks_on_chart" -> porOrdenNatural(Cancion::getWeeks_on_chart);
 
             // Decimales
-            case "danceability" -> porNumeroOBool(Cancion::getDanceability);
-            case "energy" -> porNumeroOBool(Cancion::getEnergy);
-            case "loudness" -> porNumeroOBool(Cancion::getLoudness);
-            case "speechiness" -> porNumeroOBool(Cancion::getSpeechiness);
-            case "acousticness" -> porNumeroOBool(Cancion::getAcousticness);
-            case "instrumentalness" -> porNumeroOBool(Cancion::getInstrumentalness);
-            case "liveness" -> porNumeroOBool(Cancion::getLiveness);
-            case "valence" -> porNumeroOBool(Cancion::getValence);
-            case "tempo" -> porNumeroOBool(Cancion::getTempo);
-            case "confidence_score" -> porNumeroOBool(Cancion::getConfidence_score);
+            case "danceability" -> porOrdenNatural(Cancion::getDanceability);
+            case "energy" -> porOrdenNatural(Cancion::getEnergy);
+            case "loudness" -> porOrdenNatural(Cancion::getLoudness);
+            case "speechiness" -> porOrdenNatural(Cancion::getSpeechiness);
+            case "acousticness" -> porOrdenNatural(Cancion::getAcousticness);
+            case "instrumentalness" -> porOrdenNatural(Cancion::getInstrumentalness);
+            case "liveness" -> porOrdenNatural(Cancion::getLiveness);
+            case "valence" -> porOrdenNatural(Cancion::getValence);
+            case "tempo" -> porOrdenNatural(Cancion::getTempo);
+            case "confidence_score" -> porOrdenNatural(Cancion::getConfidence_score);
 
             // Booleano
-            case "spotify_track_explicit" -> porNumeroOBool(Cancion::getSpotify_track_explicit);
+            case "spotify_track_explicit" -> porOrdenNatural(Cancion::getSpotify_track_explicit);
 
             default -> throw new IllegalArgumentException("Columna desconocida: " + columna);
         };
@@ -112,13 +116,13 @@ public class Controlador {
      * @return Comparador configurado para el tipo de dato especificado
      * @param <T> Tipo de dato del atributo
      */
-    private static <T extends Comparable<T>> Comparator<Cancion> porNumeroOBool(Function<Cancion, T> campo) {
-        return Comparator.comparing(campo, Comparator.nullsLast(Comparator.<T>naturalOrder()));
+    private static <T extends Comparable<T>> Comparator<Cancion> porOrdenNatural(Function<Cancion, T> campo) {
+        return Comparator.comparing(campo, Comparator.nullsLast(Comparator.naturalOrder()));
     }
 
     /**
-     *
-     * @param columna
+     *  Maneja los cambios de columnas al limpiar el tiempo empleado para cambiar dicha columna
+     * @param columna Columna cambiada
      */
     private void cambiarColumna(String columna) {
         tiempos.clear();
@@ -126,9 +130,9 @@ public class Controlador {
     }
 
     /**
-     * 
+     * Metodo que realiza el ordenamiento en una de las columnas de la tabla
      */
-    private void ordenarTabla() {
+    private void ordenarColumna() {
         String columna = ventana.getSeccionSuperior().getColumnaSeleccionada();
         Metodo elegido = ventana.getSeccionSuperior().getMetodoSeleccionado();
         boolean todos = ventana.getSeccionSuperior().isCompararActivado();
@@ -143,6 +147,7 @@ public class Controlador {
         ventana.getSeccionSuperior().setTiemposDisponibles(false);
         ventana.getSeccionSuperior().setTiempoOrdenamiento("Ordenando…");
 
+        // Creamos un hilo donde hagamos el ordenamiento por si ocurren errores
         Thread hilo = new Thread(null, () -> {
             HashMap<Metodo, Long> resultados = new HashMap<>();
             HashMap<Metodo, Throwable> fallos = new HashMap<>();
@@ -165,21 +170,18 @@ public class Controlador {
             }
 
             Cancion[] ordenadas = ultimaOrdenada;
-            Platform.runLater(() -> alTerminarOrdenamiento(columna, resultados, fallos, ordenadas));
+            Platform.runLater(() -> alTerminarOrdenamiento(resultados, ordenadas));
         }, "ordenamiento", TAMANO_MAXIMO);
         hilo.setDaemon(true);
         hilo.start();
     }
 
     /**
-     * 
-     * @param columna
-     * @param resultados
-     * @param fallos
+     * Metodo que muestra los tiempos de la columna empleada una vez acabado el ordenamiento
+     * @param resultados  Tiempos de cada ordenamiento
      * @param ordenadas
      */
-    private void alTerminarOrdenamiento(String columna, Map<Metodo, Long> resultados,
-                                        Map<Metodo, Throwable> fallos, Cancion[] ordenadas) {
+    private void alTerminarOrdenamiento(HashMap<Metodo, Long> resultados, Cancion[] ordenadas) {
         tiempos.putAll(resultados);
         if (ordenadas != null) {
             ventana.getSeccionTabla().mostrarCanciones(new ArrayList<>(Arrays.asList(ordenadas)));
@@ -187,7 +189,6 @@ public class Controlador {
         mostrarTiempos();
         ventana.getSeccionSuperior().setOcupado(false);
         ventana.getSeccionSuperior().setTiemposDisponibles(!tiempos.isEmpty());
-        if (!fallos.isEmpty()) mostrarErrores(fallos);
     }
 
     /**
@@ -199,7 +200,7 @@ public class Controlador {
             return;
         }
         Metodo masRapido = null;
-        for (Map.Entry<Metodo, Long> e : tiempos.entrySet()) {
+        for (HashMap.Entry<Metodo, Long> e : tiempos.entrySet()) {
             if (masRapido == null || e.getValue() < tiempos.get(masRapido)) masRapido = e.getKey();
         }
         String tiempoRapido = Grafica.formatearTiempo(tiempos.get(masRapido));
@@ -210,25 +211,7 @@ public class Controlador {
     }
 
     /**
-     * 
-     * @param fallos
-     */
-    private void mostrarErrores(Map<Metodo, Throwable> fallos) {
-        StringBuilder mensaje = new StringBuilder("No se pudo ordenar con:\n");
-        for (Map.Entry<Metodo, Throwable> f : fallos.entrySet()) {
-            String motivo = (f.getValue() instanceof StackOverflowError)
-                    ? "se agotó la pila (demasiados valores repetidos)"
-                    : String.valueOf(f.getValue());
-            mensaje.append("• ").append(f.getKey()).append(": ").append(motivo).append('\n');
-        }
-        Alert alerta = new Alert(Alert.AlertType.ERROR, mensaje.toString().trim(), ButtonType.OK);
-        alerta.setHeaderText(null);
-        alerta.initOwner(stage);
-        alerta.showAndWait();
-    }
-
-    /**
-     * 
+     * Metodo que restablece los tiempos de la tabla
      */
     private void restablecerTabla() {
         String columna = ventana.getSeccionSuperior().getColumnaSeleccionada();
@@ -239,9 +222,9 @@ public class Controlador {
     }
 
     /**
-     * 
+     * Metodo que gráfica los resultados dados por los ordenamientos
      */
-    private void graficarTabla() {
+    private void graficarOrdenamientos() {
         String columna = ventana.getSeccionSuperior().getColumnaSeleccionada();
         if (columna == null || tiempos.isEmpty()) return;
         if (ventanaGrafica == null) ventanaGrafica = new VentanaGrafica(stage);

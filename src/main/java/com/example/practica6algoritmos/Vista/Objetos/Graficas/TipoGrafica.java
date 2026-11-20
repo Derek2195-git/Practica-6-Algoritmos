@@ -7,7 +7,7 @@ public enum TipoGrafica {
     SIN_GRAFICA,
     BARRAS,
     PASTEL;
-
+    // Columnas que son para las graficas de barras
     private static ArrayList<String> COLUMNAS_BARRAS = new ArrayList<>(List.of(
             "spotify_track_duration_ms", "danceability", "energy", "key", "loudness", "mode",
             "speechiness", "acousticness", "instrumentalness", "liveness", "valence", "tempo",
@@ -15,9 +15,14 @@ public enum TipoGrafica {
             //"first_week", "last_week",
             "confidence_score"));
 
+    // Columnas que son para las gráficas de pastel
     private static ArrayList<String> COLUMNAS_PASTEL = new ArrayList<>(List.of("spotify_track_explicit"));
 
-    /** Crea la gráfica de este tipo. SIN_GRAFICA no tiene, así que no se puede crear. */
+    /**
+     * Crea una gráfica según el valor de la enumeración
+     * @param titulo Titulo de la gráfica
+     * @return Gráfica de un distinto tipo según la enumeración
+     */
     public Grafica crear(String titulo) {
         return switch (this) {
             case BARRAS -> new GraficaBarras(titulo);
@@ -26,6 +31,11 @@ public enum TipoGrafica {
         };
     }
 
+    /**
+     * Metodo que revisa la columna actual y dice el tipo de gráfica a usar
+     * @param columna Nombre de la columna a usar
+     * @return Valor de la enumeración que se usará
+     */
     public static TipoGrafica tipoDeColumna(String columna) {
         if (COLUMNAS_BARRAS.contains(columna)) return BARRAS;
         if (COLUMNAS_PASTEL.contains(columna)) return PASTEL;

@@ -17,9 +17,9 @@ import javafx.scene.text.TextAlignment;
 import java.util.*;
 
 public class SeccionTabla extends StackPane {
-    private final double ALTO_FILA_GRAFICAS = 200;
-    private final double ALTO_FILA_DATOS = 100;     // ~3 líneas de texto; súbelo si quieres filas más altas
-    private final double ALTO_ENCABEZADO = 62;     // ~2 líneas; súbelo a ~62 para 3 líneas
+    private double altoFilasGraficas = 200;
+    private  double altoFilasDatos = 100;
+    private  double altoEncabezado = 62;
 
     private ArrayList<String> columnasAnchas;
     private Cancion filaGraficas;
@@ -50,7 +50,7 @@ public class SeccionTabla extends StackPane {
             headerLabel.setMinWidth(0);
             // Sin altura explícita el encabezado mide una sola línea y recorta el wrap con "..."
             headerLabel.setMinHeight(Region.USE_PREF_SIZE);
-            headerLabel.setPrefHeight(ALTO_ENCABEZADO);
+            headerLabel.setPrefHeight(altoEncabezado);
             headerLabel.setMaxHeight(Region.USE_PREF_SIZE);
             // El label necesita un ancho conocido para poder hacer wrap
             headerLabel.prefWidthProperty().bind(columna.widthProperty().subtract(16));
@@ -87,11 +87,14 @@ public class SeccionTabla extends StackPane {
             }
             if (nombre.equals("mode") && grafica instanceof GraficaBarras barras) {   // el nombre es de ejemplo
                 barras.setCantidadBarrasFijas(2);
+            } else if (nombre.equalsIgnoreCase("key") && grafica instanceof GraficaBarras barras) {
+                barras.setCantidadBarrasFijas(12);
             }
+
             if (grafica.getGrafica() instanceof Region region) {
                 region.setMinSize(0, 0);
-                region.setPrefHeight(ALTO_FILA_GRAFICAS - 4);
-                region.setMaxHeight(ALTO_FILA_GRAFICAS - 4);
+                region.setPrefHeight(altoFilasGraficas - 4);
+                region.setMaxHeight(altoFilasGraficas - 4);
                 region.prefWidthProperty().bind(columna.widthProperty().subtract(4));
                 region.maxWidthProperty().bind(columna.widthProperty().subtract(4));
             }
@@ -106,7 +109,7 @@ public class SeccionTabla extends StackPane {
                 boolean esFilaGraficas = !vacia && item == filaGraficas;
                 // Las filas se reutilizan, así que también hay que restablecer la altura.
                 // En las filas de datos la altura se calcula según el texto envuelto.
-                setPrefHeight(esFilaGraficas ? ALTO_FILA_GRAFICAS : USE_COMPUTED_SIZE);
+                setPrefHeight(esFilaGraficas ? altoFilasGraficas : USE_COMPUTED_SIZE);
             }
         });
 
@@ -136,7 +139,7 @@ public class SeccionTabla extends StackPane {
             protected void updateItem(Object item, boolean vacia) {
                 super.updateItem(item, vacia);
 
-                if (vacia) {   // celda vacía: limpiar todo
+                if (vacia) {   // Si la celda está vacia lo quitamost odo
                     setText(null);
                     setGraphic(null);
                     setTooltip(null);
@@ -169,7 +172,7 @@ public class SeccionTabla extends StackPane {
                     tooltip.setText(valor);
                     setTooltip(tooltip);
                 }
-                fijarAlto(ALTO_FILA_DATOS);
+                fijarAlto(altoFilasDatos);
             }
         };
     }
