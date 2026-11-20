@@ -1,7 +1,6 @@
 package com.example.practica6algoritmos.Vista.Secciones;
 
 import com.example.practica6algoritmos.Modelo.Metodo;
-import com.example.practica6algoritmos.Vista.Objetos.Graficas.TipoGrafica;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
@@ -27,6 +26,10 @@ public class SeccionSuperior {
     private BooleanProperty columnaSinGrafica;
     private Consumer<String> cambiarColumna;
 
+    /**
+     * Metodo que crea la sección donde van todos los botones, comboboxes y la checkbox de la aplicación
+     * @param columnas Nombre de las columnas para el combobox
+     */
     public SeccionSuperior(ArrayList<String> columnas) {
         columnaASeleccionar = new ComboBox<>();
         ordenamientoASeleccionar = new ComboBox<>();
@@ -39,6 +42,8 @@ public class SeccionSuperior {
         tiemposDisponibles = new SimpleBooleanProperty(false);
         columnaSinGrafica = new SimpleBooleanProperty(false);
 
+        // Configuramos los el contenido comboboxes y hacemos que no se puedan mover
+        // Mientras se este cargando uno de los metodos
         configurarComboBoxes(columnas);
         configurarBotones();
 
@@ -56,6 +61,10 @@ public class SeccionSuperior {
         );
     }
 
+    /**
+     * Metodo que configura el contenido de ambas comoboxes
+     * @param columnas Nombre de todas las columnas para el ComboBox de columnas
+     */
     public void configurarComboBoxes(ArrayList<String> columnas) {
         columnaASeleccionar.setPrefWidth(200);
         columnaASeleccionar.setVisibleRowCount(12);
@@ -69,7 +78,8 @@ public class SeccionSuperior {
         columnaASeleccionar.getSelectionModel().selectFirst();
 
         ordenamientoASeleccionar.setPrefWidth(200);
-        ordenamientoASeleccionar.getItems().setAll(Metodo.values());   // se ve con Metodo.toString()
+        // Ponemos todos los métodos de la enumeración
+        ordenamientoASeleccionar.getItems().setAll(Metodo.values());
         ordenamientoASeleccionar.setValue(Metodo.QUICKSORT);
 
         columnaASeleccionar.disableProperty().bind(ocupado);
@@ -78,6 +88,10 @@ public class SeccionSuperior {
 
     }
 
+    /**
+     * Metodo que configura los botones para no permitir que podamos
+     * hacer otro ordenamiento mientras uno ocurre
+     */
     private void configurarBotones() {
         botonOrdenar.disableProperty().bind(ocupado);
         botonRestablecer.disableProperty().bind(ocupado);
@@ -85,42 +99,82 @@ public class SeccionSuperior {
         botonMostrarGrafica.disableProperty().bind(ocupado.or(tiemposDisponibles.not()));
     }
 
+    /**
+     * Getter del conteneido de la columnas seleccionda en el combobox
+     * @return Valor actual del combobox
+     */
     public String getColumnaSeleccionada() {
         return columnaASeleccionar.getValue();
     }
 
+    /**
+     * Getter del metodo actual que existe en el combobox
+     * @return Metodo actual seleccionado por el usuario para el ordenamiento
+     */
     public Metodo getMetodoSeleccionado() {
         return ordenamientoASeleccionar.getValue();
     }
 
+    /**
+     * Metodo que revisa si la checkbox de comparar con todos los metodos ha sido activada
+     * @return Booleano que indica si la checkbox está activada
+     */
     public boolean isCompararActivado() {
         return checkBoxCompararConMetodos.isSelected();
     }
 
-    public void setOcupado(boolean valor) {
-        ocupado.set(valor);
+    /**
+     * Setter de ocupado
+     * @param ocupado Booleano que indica si la aplicación está ocupada
+     */
+    public void setOcupado(boolean ocupado) {
+        this.ocupado.set(ocupado);
     }
 
-    public void setTiemposDisponibles(boolean valor) {
-        tiemposDisponibles.set(valor);
+    /**
+     * Setter del atributo que indica si ya se han sacado los tiempos
+     * @param tiemposDisponibles Booleano que indica si ya se han obtenido los tiempos con algun ordenamiento
+     */
+    public void setTiemposDisponibles(boolean tiemposDisponibles) {
+        this.tiemposDisponibles.set(tiemposDisponibles);
     }
 
+    /**
+     * Metodo que cambia el label de tiempos de ordenamiento
+     * @param texto Nuevo mensaje
+     */
     public void setTiempoOrdenamiento(String texto) {
         tiempoOrdenamiento.setText(texto);
     }
 
+    /**
+     * Metodo que le da una accion al botón de ordenar
+     * @param accion Accion a realizar
+     */
     public void alOrdenar(Runnable accion) {
         botonOrdenar.setOnAction(e-> accion.run());
     }
 
+    /**
+     * Metodo que le da una accion al boton de restablecer
+     * @param accion Accion a realizar
+     */
     public void alRestablecer(Runnable accion) {
         botonRestablecer.setOnAction(e-> accion.run());
     }
 
+    /**
+     * Metodo que le da una accion al botón de graficar
+     * @param accion Accion a realizar
+     */
     public void alGraficar(Runnable accion) {
         botonMostrarGrafica.setOnAction(e-> accion.run());
     }
 
+    /**
+     * Metodo que le da una accion al combobox cuando se cambia una columna
+     * @param accion Accion a realizar al cambiar la columna
+     */
     public void alCambiarColumna(Consumer<String> accion) {
         cambiarColumna = accion;
         if (accion != null && getColumnaSeleccionada() != null) {
@@ -128,6 +182,7 @@ public class SeccionSuperior {
         }
     }
 
+    // Getter del contenedor donde está la sección
     public HBox getContenedor() {
         return contenedor;
     }

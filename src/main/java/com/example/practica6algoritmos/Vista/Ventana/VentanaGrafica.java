@@ -22,6 +22,10 @@ public class VentanaGrafica extends Stage {
     private FlowPane leyenda;
 
 
+    /**
+     * Crea una nueva ventana donde se mostrará la gráfica del tiempo
+     * @param ventanaPrincipal
+     */
     public VentanaGrafica(Stage ventanaPrincipal) {
         initOwner(ventanaPrincipal);
         setTitle("Grafica de tiempos de ordenamiento");

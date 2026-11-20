@@ -2,7 +2,6 @@ package com.example.practica6algoritmos.Vista.Objetos.Graficas;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public enum TipoGrafica {
     SIN_GRAFICA,
@@ -27,7 +26,7 @@ public enum TipoGrafica {
         };
     }
 
-    public static TipoGrafica deColumna(String columna) {
+    public static TipoGrafica tipoDeColumna(String columna) {
         if (COLUMNAS_BARRAS.contains(columna)) return BARRAS;
         if (COLUMNAS_PASTEL.contains(columna)) return PASTEL;
         return SIN_GRAFICA;

@@ -3,48 +3,57 @@ package com.example.practica6algoritmos.Vista.Objetos.Graficas;
 import com.example.practica6algoritmos.Modelo.Metodo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Tooltip;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.EnumMap;
 
 public class GraficaPastel extends Grafica {
 
     private PieChart grafica;
 
+    /**
+     * Constructor de la gráfica de pastel
+     * @param titulo Titulo de la gráfica, aunque como ya no la usamos asi es medio innecesario
+     */
     public GraficaPastel(String titulo) {
         grafica = new PieChart();
         grafica.setTitle(titulo);
         grafica.setAnimated(false);
-        grafica.setLegendVisible(false);   // la leyenda la dibuja la ventana
+        grafica.setLegendVisible(false);
         grafica.setLabelsVisible(false);
         grafica.setPrefSize(500, 350);
     }
 
+    /**
+     * Metodo que cargaba los tiempos medidos en la gráfica de pastel, ahora ya no se usa debido
+     * @param tiemposNs EnumMap (Si, es un HashMap pero especializado en enumeraciones) para los
+     *                  tiempos medidos del arreglo, lo usaba por es más comodo trabajar asi según
+     *                  lo que encontre en google
+     */
     @Override
-    public void cargarTiempos(Map<Metodo, Long> tiemposNs) {
+    public void cargarTiempos(EnumMap<Metodo, Long> tiemposNs) {
         double totalMs = 0;
         for (long ns : tiemposNs.values()) totalMs += ns / NS_A_MS;
 
         ObservableList<PieChart.Data> datos = FXCollections.observableArrayList();
-        for (Map.Entry<Metodo, Long> entrada : tiemposNs.entrySet()) {
+        for (EnumMap.Entry<Metodo, Long> entrada : tiemposNs.entrySet()) {
             double ms = entrada.getValue() / NS_A_MS;
             datos.add(new PieChart.Data(entrada.getKey().getNombre(), ms));
         }
         grafica.setData(datos);
 
         /*
-        PieChart reescribe las clases CSS de cada rebanada al crearla, así que la clase del
-        metodo se agrega hasta DESPUÉS de asignar los datos a la gráfica.
+        No se por que pero no asigna los estilos al momento de introducir los datos, asi que
+        tengo que poner los estilos aqui, esta raro
          */
         int i = 0;
-        for (Map.Entry<Metodo, Long> entrada : tiemposNs.entrySet()) {
+        for (EnumMap.Entry<Metodo, Long> entrada : tiemposNs.entrySet()) {
             Node rebanada = datos.get(i++).getNode();
-            double porcentaje = totalMs == 0 ? 0 : entrada.getValue() / NS_A_MS * 100 / totalMs;
             rebanada.getStyleClass().add(claseCss(entrada.getKey()));
-
         }
     }
 
@@ -53,6 +62,11 @@ public class GraficaPastel extends Grafica {
         return grafica;
     }
 
+    /**
+     * Metodo que carga los valores booleanos del cSv
+     * en la gráfica de pastel,
+     * @param valores ArrayList con todos los booleanos identificados
+     */
     public void cargarValoresBooleanos(ArrayList<Boolean> valores) {
         int verdaderos = 0;
         int falsos = 0;
@@ -75,12 +89,17 @@ public class GraficaPastel extends Grafica {
                 case "false"-> "False";
                 default-> "Null";
             };
+            // Le puse un tooltip por que no se ve nada, literal nada, del tipo de dato
+            // Y no quiero seguir modificando el tamaño de la tabla
             Tooltip.install(dato.getNode(), new Tooltip(texto + ": "  + dato.getPieValue()));
         }
     }
 
+    /**
+     * Metodo que ajusta la gráfica de pay a la celda, pero aqui no es tan necesario como la de barras
+     */
     @Override
     public void convertirACelda() {
-
+        grafica.setPadding(Insets.EMPTY);
     }
 }

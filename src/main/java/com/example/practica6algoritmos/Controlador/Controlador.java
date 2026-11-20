@@ -46,13 +46,13 @@ public class Controlador {
     }
 
     /**
-     * Devuelve el criterio de comparación para la columna indicada.
-     * Los nombres coinciden con ConjuntoDatos.getNombresColumnas().
-     * Los valores null (datos faltantes en el CSV) quedan siempre al final.
+     * Devuelve un Comparator para objetos de tipo Cancion
+     * dependiendo del campo dado en el CSV
+     * El criterio se crea a través de un getter
      */
     private Comparator<Cancion> getComparator(String columna) {
         return switch (columna) {
-            // ---- Texto (sin distinguir mayúsculas/minúsculas) ----
+            // Texto
             case "song_id" -> porTexto(Cancion::getSong_id);
             case "performer" -> porTexto(Cancion::getPerformer);
             case "song" -> porTexto(Cancion::getSong);
@@ -69,50 +69,65 @@ public class Controlador {
             case "evidence_span" -> porTexto(Cancion::getEvidence_span);
             case "cot_rationale" -> porTexto(Cancion::getCot_rationale);
 
-            // ---- Enteros ----
-            case "spotify_track_duration_ms" -> porNatural(Cancion::getSpotify_track_duration_ms);
-            case "key" -> porNatural(Cancion::getKey);
-            case "mode" -> porNatural(Cancion::getMode);
-            case "time_signature" -> porNatural(Cancion::getTime_signature);
-            case "spotify_track_popularity" -> porNatural(Cancion::getSpotify_track_popularity);
-            case "peak_position" -> porNatural(Cancion::getPeak_position);
-            case "weeks_on_chart" -> porNatural(Cancion::getWeeks_on_chart);
+            // Enteros
+            case "spotify_track_duration_ms" -> porNumeroOBool(Cancion::getSpotify_track_duration_ms);
+            case "key" -> porNumeroOBool(Cancion::getKey);
+            case "mode" -> porNumeroOBool(Cancion::getMode);
+            case "time_signature" -> porNumeroOBool(Cancion::getTime_signature);
+            case "spotify_track_popularity" -> porNumeroOBool(Cancion::getSpotify_track_popularity);
+            case "peak_position" -> porNumeroOBool(Cancion::getPeak_position);
+            case "weeks_on_chart" -> porNumeroOBool(Cancion::getWeeks_on_chart);
 
-            // ---- Decimales ----
-            case "danceability" -> porNatural(Cancion::getDanceability);
-            case "energy" -> porNatural(Cancion::getEnergy);
-            case "loudness" -> porNatural(Cancion::getLoudness);
-            case "speechiness" -> porNatural(Cancion::getSpeechiness);
-            case "acousticness" -> porNatural(Cancion::getAcousticness);
-            case "instrumentalness" -> porNatural(Cancion::getInstrumentalness);
-            case "liveness" -> porNatural(Cancion::getLiveness);
-            case "valence" -> porNatural(Cancion::getValence);
-            case "tempo" -> porNatural(Cancion::getTempo);
-            case "confidence_score" -> porNatural(Cancion::getConfidence_score);
+            // Decimales
+            case "danceability" -> porNumeroOBool(Cancion::getDanceability);
+            case "energy" -> porNumeroOBool(Cancion::getEnergy);
+            case "loudness" -> porNumeroOBool(Cancion::getLoudness);
+            case "speechiness" -> porNumeroOBool(Cancion::getSpeechiness);
+            case "acousticness" -> porNumeroOBool(Cancion::getAcousticness);
+            case "instrumentalness" -> porNumeroOBool(Cancion::getInstrumentalness);
+            case "liveness" -> porNumeroOBool(Cancion::getLiveness);
+            case "valence" -> porNumeroOBool(Cancion::getValence);
+            case "tempo" -> porNumeroOBool(Cancion::getTempo);
+            case "confidence_score" -> porNumeroOBool(Cancion::getConfidence_score);
 
-            // ---- Booleano (false < true) ----
-            case "spotify_track_explicit" -> porNatural(Cancion::getSpotify_track_explicit);
+            // Booleano
+            case "spotify_track_explicit" -> porNumeroOBool(Cancion::getSpotify_track_explicit);
 
             default -> throw new IllegalArgumentException("Columna desconocida: " + columna);
         };
     }
 
-    /** Compara por un campo de texto, ignorando mayúsculas y con null al final. */
+    /**
+     * Crea un "objeto" tipo comparator el cual compara la canción por el texto
+     * @param campo Getter a llamar que extrae el atributo de la canción
+     * @return Comparador configurado para el tipo de dato especificado
+     */
     private static Comparator<Cancion> porTexto(Function<Cancion, String> campo) {
         return Comparator.comparing(campo, Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER));
     }
 
-    /** Compara por un campo con orden natural (Integer, Double, Boolean) y con null al final. */
-    private static <T extends Comparable<T>> Comparator<Cancion> porNatural(Function<Cancion, T> campo) {
+    /**
+     * Asigna un objeto Comparator el cual compara la canción por un número o un booleano, lo uso para lo que no sea texto
+     * @param campo Getter a llamar que extrae el atributo de la canción
+     * @return Comparador configurado para el tipo de dato especificado
+     * @param <T> Tipo de dato del atributo
+     */
+    private static <T extends Comparable<T>> Comparator<Cancion> porNumeroOBool(Function<Cancion, T> campo) {
         return Comparator.comparing(campo, Comparator.nullsLast(Comparator.<T>naturalOrder()));
     }
 
+    /**
+     *
+     * @param columna
+     */
     private void cambiarColumna(String columna) {
         tiempos.clear();
-        ventana.getSeccionTabla().mostrarCanciones(conjuntoDatos.getCanciones());
         mostrarTiempos();
     }
 
+    /**
+     * 
+     */
     private void ordenarTabla() {
         String columna = ventana.getSeccionSuperior().getColumnaSeleccionada();
         Metodo elegido = ventana.getSeccionSuperior().getMetodoSeleccionado();
@@ -144,7 +159,7 @@ public class Controlador {
                     long ns = new ComparadorTiempos<Cancion>(metodo).medirTiempo(copia);
                     resultados.put(metodo, ns);
                     ultimaOrdenada = copia;
-                } catch (Throwable error) {   // incluye StackOverflowError
+                } catch (Throwable error) {
                     fallos.put(metodo, error);
                 }
             }
@@ -156,6 +171,13 @@ public class Controlador {
         hilo.start();
     }
 
+    /**
+     * 
+     * @param columna
+     * @param resultados
+     * @param fallos
+     * @param ordenadas
+     */
     private void alTerminarOrdenamiento(String columna, Map<Metodo, Long> resultados,
                                         Map<Metodo, Throwable> fallos, Cancion[] ordenadas) {
         tiempos.putAll(resultados);
@@ -168,6 +190,9 @@ public class Controlador {
         if (!fallos.isEmpty()) mostrarErrores(fallos);
     }
 
+    /**
+     * 
+     */
     private void mostrarTiempos() {
         if (tiempos.isEmpty()) {
             ventana.getSeccionSuperior().setTiempoOrdenamiento("--");
@@ -184,6 +209,10 @@ public class Controlador {
         ventana.getSeccionSuperior().setTiempoOrdenamiento(texto);
     }
 
+    /**
+     * 
+     * @param fallos
+     */
     private void mostrarErrores(Map<Metodo, Throwable> fallos) {
         StringBuilder mensaje = new StringBuilder("No se pudo ordenar con:\n");
         for (Map.Entry<Metodo, Throwable> f : fallos.entrySet()) {
@@ -198,6 +227,9 @@ public class Controlador {
         alerta.showAndWait();
     }
 
+    /**
+     * 
+     */
     private void restablecerTabla() {
         String columna = ventana.getSeccionSuperior().getColumnaSeleccionada();
         if (columna == null) return;
@@ -206,6 +238,9 @@ public class Controlador {
         ventana.getSeccionSuperior().setTiempoOrdenamiento("--");
     }
 
+    /**
+     * 
+     */
     private void graficarTabla() {
         String columna = ventana.getSeccionSuperior().getColumnaSeleccionada();
         if (columna == null || tiempos.isEmpty()) return;
