@@ -17,13 +17,12 @@ import javafx.scene.text.TextAlignment;
 import java.util.*;
 
 public class SeccionTabla extends StackPane {
-    private static final double ALTO_FILA_GRAFICAS = 200;
-    private static final double ALTO_FILA_DATOS = 56;     // ~3 líneas de texto; súbelo si quieres filas más altas
-    private static final double ALTO_ENCABEZADO = 44;     // ~2 líneas; súbelo a ~62 para 3 líneas
+    private final double ALTO_FILA_GRAFICAS = 200;
+    private final double ALTO_FILA_DATOS = 100;     // ~3 líneas de texto; súbelo si quieres filas más altas
+    private final double ALTO_ENCABEZADO = 62;     // ~2 líneas; súbelo a ~62 para 3 líneas
 
     private ArrayList<String> columnasAnchas;
     private Cancion filaGraficas;
-
     private TableView<Cancion> tabla;
     private HashMap<String, TableColumn<Cancion, Object>> columnasPorNombre;
     private HashMap<String, Grafica> graficasPorColumna;

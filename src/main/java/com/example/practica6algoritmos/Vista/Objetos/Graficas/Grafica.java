@@ -32,12 +32,16 @@ public abstract class Grafica {
 
     /**
      * Metodo que carga valores decimales en una grafica, usado para la gráfica de barras
-     * @param valores
+     * @param valores ArrayList de valores flotantes (osea de tipo double) a graficar
      */
     public void cargarValores(ArrayList<Double> valores) {
         System.out.println("Cargando valores a la grafica de barras...");
     }
 
+    /**
+     * Metodo que carga los valores booleanos en una gráfica, usada para la de pastel
+     * @param valores ArrayList con los datos a graficar
+     */
     public void cargarValoresBooleanos(ArrayList<Boolean> valores) {
         System.out.println("Cargando valores a la grafica de pastel...");
     }
