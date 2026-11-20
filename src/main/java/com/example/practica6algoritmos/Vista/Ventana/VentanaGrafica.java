@@ -13,7 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,18 +43,16 @@ public class VentanaGrafica extends Stage {
         setScene(escena);
     }
 
-    public void mostrar(String columna, TipoGrafica tipo, Map<Metodo, Long> tiemposNs) {
+    public void mostrar(String columna, TipoGrafica tipo, HashMap<Metodo, Long> tiemposNs) {
         leyenda.getChildren().clear();
 
-        EnumMap<Metodo, Long> ordenados = new EnumMap<>(Metodo.class);
-        ordenados.putAll(tiemposNs);
-
         Grafica grafica = tipo.crear("Tiempo de ordenación de la columna " + columna);
-        grafica.cargarTiempos(ordenados);
+        grafica.cargarTiempos(tiemposNs);
         ventana.setCenter(grafica.getGrafica());
 
-        for (HashMap.Entry<Metodo, Long> e : ordenados.entrySet()) {
-            leyenda.getChildren().add(crearItemLeyenda(e.getKey(), e.getValue()));
+        for (Metodo metodo : Metodo.values()) {
+            Long tiempo = tiemposNs.get(metodo);
+            if (tiempo != null) leyenda.getChildren().add(crearItemLeyenda(metodo, tiempo));
         }
         show();
         toFront();

@@ -9,7 +9,7 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.control.Tooltip;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
+import java.util.HashMap;
 
 public class GraficaPastel extends Grafica {
 
@@ -30,17 +30,17 @@ public class GraficaPastel extends Grafica {
 
     /**
      * Metodo que cargaba los tiempos medidos en la gráfica de pastel, ahora ya no se usa debido
-     * @param tiemposNs EnumMap (Si, es un HashMap pero especializado en enumeraciones) para los
+     * @param tiemposNs HashMap (Si, es un HashMap pero especializado en enumeraciones) para los
      *                  tiempos medidos del arreglo, lo usaba por es más comodo trabajar asi según
      *                  lo que encontre en google
      */
     @Override
-    public void cargarTiempos(EnumMap<Metodo, Long> tiemposNs) {
+    public void cargarTiempos(HashMap<Metodo, Long> tiemposNs) {
         double totalMs = 0;
         for (long ns : tiemposNs.values()) totalMs += ns / NS_A_MS;
 
         ObservableList<PieChart.Data> datos = FXCollections.observableArrayList();
-        for (EnumMap.Entry<Metodo, Long> entrada : tiemposNs.entrySet()) {
+        for (HashMap.Entry<Metodo, Long> entrada : tiemposNs.entrySet()) {
             double ms = entrada.getValue() / NS_A_MS;
             datos.add(new PieChart.Data(entrada.getKey().getNombre(), ms));
         }
@@ -51,7 +51,7 @@ public class GraficaPastel extends Grafica {
         tengo que poner los estilos aqui, esta raro
          */
         int i = 0;
-        for (EnumMap.Entry<Metodo, Long> entrada : tiemposNs.entrySet()) {
+        for (HashMap.Entry<Metodo, Long> entrada : tiemposNs.entrySet()) {
             Node rebanada = datos.get(i++).getNode();
             rebanada.getStyleClass().add(claseCss(entrada.getKey()));
         }

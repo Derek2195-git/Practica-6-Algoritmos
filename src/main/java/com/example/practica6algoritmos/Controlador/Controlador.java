@@ -21,14 +21,14 @@ public class Controlador {
     private ConjuntoDatos conjuntoDatos;
     private VentanaPrincipal ventana;
     private VentanaGrafica ventanaGrafica;
-    private EnumMap<Metodo, Long> tiempos;
+    private HashMap<Metodo, Long> tiempos;
     private final long TAMANO_MAXIMO = 50 * 1024 * 1024;
 
 
     public Controlador(Stage stage) throws IOException {
         this.stage = stage;
         conjuntoDatos = new ConjuntoDatos();
-        tiempos = new EnumMap<>(Metodo.class);
+        tiempos = new HashMap<>();
 
         ventana = new VentanaPrincipal(conjuntoDatos.getNombresColumnas());
         ventana.getSeccionTabla().mostrarCanciones(conjuntoDatos.getCanciones());
@@ -144,8 +144,8 @@ public class Controlador {
         ventana.getSeccionSuperior().setTiempoOrdenamiento("Ordenando…");
 
         Thread hilo = new Thread(null, () -> {
-            EnumMap<Metodo, Long> resultados = new EnumMap<>(Metodo.class);
-            EnumMap<Metodo, Throwable> fallos = new EnumMap<>(Metodo.class);
+            HashMap<Metodo, Long> resultados = new HashMap<>();
+            HashMap<Metodo, Throwable> fallos = new HashMap<>();
             Cancion[] ultimaOrdenada = null;
 
             for (int i = 0; i < metodos.size(); i++) {

@@ -4,14 +4,14 @@ import com.example.practica6algoritmos.Modelo.Metodo;
 import javafx.scene.Node;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Grafica {
     // Constante para convertir los nanosegundos a milisegundos
     protected static final double NS_A_MS = 1000000.0;
 
-    public abstract void cargarTiempos(EnumMap<Metodo, Long> tiemposNs);
+    public abstract void cargarTiempos(HashMap<Metodo, Long> tiemposNs);
 
     // por si las dudas lo voy a regresar como Node, aunque sea un BarChart
     public abstract Node getGrafica();

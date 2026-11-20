@@ -13,7 +13,7 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
+import java.util.HashMap;
 
 public class GraficaBarras extends Grafica {
     private final int MIN_BARRAS = 2;
@@ -60,28 +60,32 @@ public class GraficaBarras extends Grafica {
     /**
      * Metodo que carga los tiempos de ordenamientos dados a la gráfica y genera las barras
      *
-     * @param tiemposNs EnumMap (Mapa de enumeración, usado especificamente para el Metodo)
+     * @param tiemposNs HashMap (Mapa de enumeración, usado especificamente para el Metodo)
      *                  parametrizado en el metodo y un tipo de dato long para los tiempos
      *                  de cada ordenamiento
      */
     @Override
-    public void cargarTiempos(EnumMap<Metodo, Long> tiemposNs) {
+    public void cargarTiempos(HashMap<Metodo, Long> tiemposNs) {
         ArrayList<String> categorias = new ArrayList<>();
+        ArrayList<Metodo> metodos = new ArrayList<>();
         XYChart.Series<String, Number> serie = new XYChart.Series<>();
 
-        for (EnumMap.Entry<Metodo, Long> entrada : tiemposNs.entrySet()) {
-            categorias.add(entrada.getKey().getNombre());
-            serie.getData().add(new XYChart.Data<>(entrada.getKey().getNombre(), entrada.getValue() / NS_A_MS));
+        for (Metodo metodo : Metodo.values()) {
+            Long tiempo = tiemposNs.get(metodo);
+            if (tiempo == null) continue;   // método que no se ejecutó
+
+            metodos.add(metodo);
+            categorias.add(metodo.getNombre());
+            serie.getData().add(new XYChart.Data<>(metodo.getNombre(), tiempo / NS_A_MS));
         }
 
         ejeX.setCategories(FXCollections.observableList(categorias));
         grafica.getData().clear();
         grafica.getData().add(serie);
 
-        int i = 0;
-        for (EnumMap.Entry<Metodo, Long> entrada : tiemposNs.entrySet()) {
-            Node barra = serie.getData().get(i++).getNode();
-            barra.getStyleClass().add(claseCss(entrada.getKey()));
+        for (int i = 0; i < metodos.size(); i++) {
+            Node barra = serie.getData().get(i).getNode();
+            barra.getStyleClass().add(claseCss(metodos.get(i)));
         }
     }
 
